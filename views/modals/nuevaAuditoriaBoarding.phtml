@@ -1,0 +1,112 @@
+<div id="addAuditBoarding" class="modal fade" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen">
+		<div class="modal-content border-0">
+			<div class="modal-header bg-white text-black">
+				<h3 class="modal-title w-100 text-center fst-normal">Añadir nueva auditoria</h3>
+				<button type="button" class="rounded-circle p-3 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row contenido-modal">
+
+					<!-- Column 1 inputs -->
+					<div class="col-md">
+						<!-- Position -->
+						<div class="form-group form_info mb-3">
+							<select class="form-select form_input" name="posicion" id="posicion">
+								<option disabled selected>Seleccione una opción</option>
+							</select>
+							<label for="posicion" class="form_label">Posición a Auditar</label>
+						</div>
+
+						<!-- Supervisor -->
+						<div class="form-group form_info mb-3">
+							<select class="form-select form_input" name="supervisor" id="supervisor">
+								<option id="default_supoption" disabled selected>Seleccione una opción</option>
+							</select>
+							<label for="supervisor" class="form_label">Supervisor</label>
+						</div>
+
+						<!-- Area -->
+						<div class="form-group form_info mb-3">
+							<select class="form-select form_input" name="area" id="area">
+								<option disabled selected>Seleccione una opción</option>
+							</select>
+							<label for="area" class="form_label">Area a Auditar</label>
+						</div>
+
+					</div>
+
+					<!-- Column 2 inputs -->
+					<div class="col-md">
+						<!-- Points -->
+						<div class="form-group form_info mb-3">
+							<select class="form-select form_input" name="puntos" id="puntos">
+								<option disabled selected>Seleccione una opción</option>
+							</select>
+							<label for="puntos" class="form_label">Puntos</label>
+						</div>
+
+						<!-- Status -->
+						<div class="form-group form_info mb-3">
+							<select class="form-select form_input" name="estado" id="estado">
+								<option disabled selected>Seleccione una opción</option>
+							</select>
+							<label for="estado" class="form_label">Estado</label>
+						</div>
+					</div>
+					
+					<div>
+						<!-- Text area for comments -->
+						<div class="form-group form_info mb-1">
+							<textarea class="form-control form_textarea" id="comentarios" cols="30" rows="1" placeholder="Escriba un Comentario" style="resize:none; height: 80px;"></textarea>
+						</div>
+	
+						<!-- Add Images button -->
+						<div class="form-group form_info mb-3">
+							<input type="file" name="photo" class="d-none" id="imagen-auditoria">
+							<label for="imagen-auditoria" class="form-control btn btn-primary">Agregar una imagen</label>
+						</div>
+	
+						<!-- Details table -->
+						<table id="detalleAuditoria" class="table table-bordered table-hover table-striped table-sm display nowrap" cellpadding="0" width="100%">
+							<thead class="bg-black text-light text-center align-middle">
+								<tr>
+									<th>Area Auditada</th>
+									<th>Punto Auditado</th>
+									<th>Estado</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody class="text-center align-middle">
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tbody>
+						</table>
+	
+						<!-- Images container -->
+						<div class="card mt-3">
+							<div class="card-header">
+								<h5 class="text-center">Imagenes</h5>
+							</div>
+							<div class="card-body">
+								<p class="card-text" id="img-comment">No se ha agregado ninguna imagen</p>
+								<div class="justify-content-center" id="imagesContainer"></div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Modal footer -->
+			<div class="modal-footer justify-content-center border-0">
+				<!-- Action buttons -->
+				<button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+				<button class="btn btn-success" id="guardarAuditoria">Guardar</button>
+				<button class="btn btn-primary" id="limpiarAuditoria">Limpiar</button>
+			</div>
+		</div>
+	</div>
+</div>

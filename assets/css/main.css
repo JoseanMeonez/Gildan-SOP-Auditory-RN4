@@ -1,0 +1,61 @@
+/* Login Buttons */
+.button-login {
+	border: none;
+	border-color: solid transparent;
+	border-radius: 4px;
+	padding: 10px;
+}
+
+/* Normal buttons */
+.button {
+	border: none;
+	border-color: solid transparent;
+	border-radius: 4px;
+	padding: 4px;
+}
+
+/* Close modal button */
+.btn-close:hover {
+	background-color: rgb(241, 241, 241);
+}
+
+/* Upload products photos */
+#imagesContainer {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+#imagesContainer > div {
+	margin-right: 10px;
+	margin-bottom: 8px;
+}
+
+.prevImage {
+	border: 1px solid #CCC;
+	width: 120px;
+	height: 148px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.prevImage img {
+	width: 100%;
+}
+
+.inputUploadFile {
+	display: none;  
+}
+
+.btnUploadFile, .btnDeleteFile {
+	border: 0;
+	margin: 2px;
+	text-align: center;
+	padding: 2px 3px;
+	color: #FFF;
+	font-size: 9pt;
+	cursor: pointer;
+	width: 100%;
+}
