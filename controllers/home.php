@@ -39,7 +39,7 @@ class home extends controllers
 		$data['page_link'] = path;
 		$data['page_script'] = media . '/js/knitting/knitting.js';
 		$data['page_actions'] = media . '/js/knitting/actions.js';
-		$this->views->getViews($this, "knitting", $data);
+		$this->views->getViews($this, "audits/knitting", $data);
 	}
 
 	// List of Dyeing's SOP
@@ -54,7 +54,7 @@ class home extends controllers
 		$data['page_link'] = path;
 		$data['page_script'] = media . '/js/dyeing/dyeing.js';
 		$data['page_actions'] = media . '/js/dyeing/actions.js';
-		$this->views->getViews($this, "dyeing", $data);
+		$this->views->getViews($this, "audits/dyeing", $data);
 	}
 
 	// List of Boarding's SOP
@@ -69,7 +69,7 @@ class home extends controllers
 		$data['page_link'] = path;
 		$data['page_script'] = media . '/js/boarding/boarding.js';
 		$data['page_actions'] = media . '/js/boarding/actions.js';
-		$this->views->getViews($this, "boarding", $data);
+		$this->views->getViews($this, "audits/boarding", $data);
 	}
 
 	// List of Users
@@ -84,6 +84,24 @@ class home extends controllers
 		$data['page_link'] = path;
 		$data['page_script'] = media . "/js/users/users.js";
 		$data['page_actions'] = media . '/js/users/actions.js';
-		$this->views->getViews($this, "users", $data);
+		$this->views->getViews($this, "config_views/users", $data);
+	}
+
+	public function points($area)
+	{
+		if ($area == 'Dyeing' or $area == 'Boarding' or $area == 'Knitting') {
+			$data['page_tab'] = 'Puntos '.$area;
+			$data['page_favicon'] = 'favicon.ico';
+			$data['page_title'] = 'Puntos de Auditoria '.$area;
+			$data['page_breadcrumb'] = 'Puntos '.$area;
+			$data['page_description'] = 'Listado de Puntos a Auditar en '.$area;
+			$data['page_icon'] = 'fa-solid fa-map-pin';
+			$data['page_link'] = path;
+			$data['page_script'] = media . '/js/points/points.js';
+			$data['page_actions'] = media . '/js/points/actions.js';
+			$this->views->getViews($this, "points/$area", $data);
+		} else {
+			$this->views->getViews($this, "errors/error");
+		}
 	}
 }
