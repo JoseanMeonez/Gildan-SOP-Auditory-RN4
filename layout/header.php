@@ -45,8 +45,6 @@
 	<link rel="stylesheet" type="text/css" href="<?= vendors; ?>/pace/themes/blue/pace-theme-minimal.css">
 
 	<!-- Own Styles and fonts -->
-	<!-- <link rel="stylesheet" type="text/css" href="<?= media; ?>/css/inter-font.css">
-	<link rel="stylesheet" type="text/css" href="<?= media; ?>/css/public-sans-font.css"> -->
 	<link rel="stylesheet" type="text/css" href="<?= media; ?>/css/style.css">
 	<link rel="stylesheet" type="text/css" href="<?= media; ?>/css/main.css">
 </head>
