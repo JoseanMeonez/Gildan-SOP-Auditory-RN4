@@ -115,7 +115,8 @@
 	--black: #000000;
 	--white: #ffffff;
 	/* <<========== Customize Colors ==========> */
-	--bytes: #FF2E00;
+	--orangered: #FD6914;
+	--yellow: #EEB200;
 	/* --gildan: #0039b3; */
 	--gildan: #0c4c93;
 	--bl-chome: #2c7ad3;
@@ -125,7 +126,11 @@
 	--dark2: #2D353C;
 	/* <<========== Fonts ==========> */
 	--fontawesome: 'Font Awesome 6 Free', sans-serif, Arial;
-	--fontsDefault: "Inter", "Public Sans", 'Poppins', 'AvenirNext LT Pro', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; 
+	--fontsDefault: "Ap", "Public Sans", 'Poppins', 'AvenirNext LT Pro', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; 
+}
+
+.bg-orangered {
+	background-color: var(--orangered);
 }
 
 *,
@@ -227,26 +232,12 @@ ul ol {
 	margin-bottom: 0;
 }
 
-dt {
-	font-weight: 700;
-}
-
-dd {
-	margin-bottom: 0.5rem;
-	margin-left: 0;
-}
-
-blockquote {
-	margin: 0 0 1rem;
-}
-
-b,
-strong {
-	font-weight: bolder;
-}
-
 small {
-	font-size: 80%;
+	font-size: 0.80rem;
+}
+
+b, strong, .toast-body {
+	font-size: 1.05rem;
 }
 
 sub,
@@ -526,12 +517,6 @@ hr {
 	margin-bottom: 1rem;
 	border: 0;
 	border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-small,
-.small {
-	font-size: 80%;
-	font-weight: 400;
 }
 
 mark,
@@ -2127,7 +2112,7 @@ select:focus {
 .form_input2:not(:placeholder-shown)+.form_label2 {
 	top: 0;
 	left: 0;
-	color: var(--gildan) !important;
+	color: var(--white) !important;
 	padding: 0 20px;
 }
 

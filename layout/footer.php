@@ -1,3 +1,4 @@
+<?php getToasts() ?>
 	<!-- Libraries -->
 	<!-- Jquery, Popper & Bootstrap -->
 	<script type="text/javascript" src="<?= vendors; ?>/jquery/jquery.min.js"></script>

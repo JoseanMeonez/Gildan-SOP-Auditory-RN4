@@ -24,12 +24,12 @@
 		<div class="col-md-12">
 			<div class="tile">
 				<div class="tile-body">
-					<table id="tblBoarding" class="table table-bordered table-hover table-striped table-sm display nowrap" cellpadding="0" width="100%">
+					<table id="table-dyeing" class="table table-bordered table-hover table-striped table-sm display nowrap" cellpadding="0" width="100%">
 						<thead class="bg bg-black text-light text-center align-middle">
 							<tr>
 								<th>ID</th>
 								<th>Area</th>
-								<th>Puesto</th>
+								<th>Posición</th>
 								<th># Punto</th>
 								<th>Descripción</th>
 								<th>Acciones</th>
@@ -50,7 +50,6 @@
 	</div>
 </main>
 
-<?= 
+<?=
 	component('footer', $data);
-	getToasts();
 ?>

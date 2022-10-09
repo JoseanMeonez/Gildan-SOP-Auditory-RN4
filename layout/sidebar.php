@@ -34,6 +34,12 @@
 						<span class="treeview-item__label"> Auditorias</span>
 					</a>
 				</li>
+				<li>
+					<a class="treeview-item" href="<?= path; ?>/home/points/Knitting">
+						<i class="icon fa-solid fa-solid fa-circle-dot"></i>
+						<span class="treeview-item__label"> Puntos</span>
+					</a>
+				</li>
 			</ul>
 		</li>
 
@@ -72,6 +78,12 @@
 					<a class="treeview-item" href="<?= path; ?>/home/boarding">
 						<i class="icon fa-solid fa-solid fa-circle-dot"></i>
 						<span class="treeview-item__label"> Auditorias</span>
+					</a>
+				</li>
+				<li>
+					<a class="treeview-item" href="<?= path; ?>/home/points/Boarding">
+						<i class="icon fa-solid fa-solid fa-circle-dot"></i>
+						<span class="treeview-item__label"> Puntos</span>
 					</a>
 				</li>
 			</ul>

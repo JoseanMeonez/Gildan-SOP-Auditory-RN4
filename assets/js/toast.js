@@ -3,7 +3,11 @@ var toast = new bootstrap.Toast($('#liveToast'))
 
 // This arrow function give a format to the toast
 const formatToast = (status, color, modalid) => {
+	// 1 = Success
+	// 2 = Danger
+	// 3 = Warning
 	modalid = modalid || false
+
 	// Styling toast
 	if (status == true && color == 1 && modalid >= 1) {
 		// Removing other classes

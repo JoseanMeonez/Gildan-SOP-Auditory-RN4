@@ -1,0 +1,45 @@
+<div id="pointsModal" class="modal fade" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+		<div class="modal-content border-0 bg-primary">
+			<div class="toast-header text-black">
+				<h3 class="modal-title w-100 text-center fst-normal"></h3>
+				<button type="button" class="rounded-circle p-3 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row contenido-modal">
+
+					<!-- First Column -->
+					<div class="col-md">
+						<!-- Position -->
+						<div class="form-group form_info my-3">
+							<select class="form-select form_input2" name="posicion" id="posicion">
+								<option id="#default_posoption" disabled selected>Seleccione una opción</option>
+							</select>
+							<label for="posicion" class="form_label2">Posición a Auditar</label>
+						</div>
+
+					</div>
+
+					<!-- Second Column -->
+					<div class="col-md">
+						<!-- Point -->
+						<div class="form-group form_info my-3">
+							<input type="text" name="punto" id="punto" class="form-control form_input2" placeholder=" ">
+							<label for="punto" class="form-label form_label2">Punto de Auditoria</label>
+						</div>
+					</div>
+
+						<!-- Text area for description -->
+						<div class="form-group form_info mb-1">
+							<textarea class="form-control form_input2" id="descripcion" cols="30" rows="1" placeholder="Escriba una Descripción del punto de Auditoria" style=" height: 80px;"></textarea>
+						</div>
+				</div>
+			<!-- Modal footer -->
+			<div class="modal-footer justify-content-center border-0">
+				<!-- Action buttons -->
+				<button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+				<button class="btn btn-success" id="guardarPunto">Guardar</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -31,5 +31,4 @@
 
 <?= 
 	component('footer', $data);
-	getToasts();
 ?>

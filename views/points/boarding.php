@@ -1,6 +1,4 @@
-<?= 
-	component('Header', $data);
-?>
+<?= component('header', $data) ?>
 
 <!-- Main -->
 <main class="app-content">
@@ -26,24 +24,18 @@
 		<div class="col-md-12">
 			<div class="tile">
 				<div class="tile-body">
-					<table id="tblBoarding" class="table table-bordered table-hover table-striped table-sm display nowrap" cellpadding="0" width="100%">
+					<table id="table-boarding" class="table table-bordered table-hover table-striped table-sm display" cellpadding="0" width="100%">
 						<thead class="bg bg-black text-light text-center align-middle">
 							<tr>
-								<th>No.</th>
-								<th>Fecha</th>
-								<th>Semana</th>
-								<th>Mes</th>
+								<th>ID</th>
 								<th>Area</th>
-								<th>Pasa</th>
-								<th>Falla</th>
-								<th>% Cumplimiento</th>
+								<th>Posición</th>
+								<th># Punto</th>
+								<th>Descripción</th>
 								<th>Acciones</th>
 							</tr>
 						</thead>
 						<tbody class="text-center align-middle">
-							<td></td>
-							<td></td>
-							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -59,6 +51,6 @@
 </main>
 
 <?=
-	getModal('nuevaAuditoriaBoarding', $data);
-	component('footer', $data)
+	getModal('points', $data);
+	component('footer', $data);
 ?>
