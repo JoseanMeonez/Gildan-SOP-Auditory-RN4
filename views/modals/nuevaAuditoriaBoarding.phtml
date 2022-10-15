@@ -1,23 +1,15 @@
 <div id="addAuditBoarding" class="modal fade" tabindex="-1">
 	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen">
 		<div class="modal-content border-0">
-			<div class="modal-header bg-white text-black">
-				<h3 class="modal-title w-100 text-center fst-normal">Añadir nueva auditoria</h3>
+			<div class="modal-header bg-primary text-white">
+				<h3 class="modal-title w-100 text-center fst-normal">Añadir nueva auditoria Boarding</h3>
 				<button type="button" class="rounded-circle p-3 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<div class="modal-body">
-				<div class="row contenido-modal">
+			<div class="modal-body mx-5">
+				<div class="row contenido-modal mx-5 g-3">
 
 					<!-- Column 1 inputs -->
 					<div class="col-md">
-						<!-- Position -->
-						<div class="form-group form_info mb-3">
-							<select class="form-select form_input" name="posicion" id="posicion">
-								<option disabled selected>Seleccione una opción</option>
-							</select>
-							<label for="posicion" class="form_label">Posición a Auditar</label>
-						</div>
-
 						<!-- Supervisor -->
 						<div class="form-group form_info mb-3">
 							<select class="form-select form_input" name="supervisor" id="supervisor">
@@ -26,36 +18,40 @@
 							<label for="supervisor" class="form_label">Supervisor</label>
 						</div>
 
-						<!-- Area -->
-						<div class="form-group form_info mb-3">
-							<select class="form-select form_input" name="area" id="area">
-								<option disabled selected>Seleccione una opción</option>
-							</select>
-							<label for="area" class="form_label">Area a Auditar</label>
-						</div>
-
 					</div>
 
 					<!-- Column 2 inputs -->
 					<div class="col-md">
-						<!-- Points -->
+						<!-- Position -->
 						<div class="form-group form_info mb-3">
-							<select class="form-select form_input" name="puntos" id="puntos">
+							<select class="form-select form_input" name="posicion" id="posicion">
 								<option disabled selected>Seleccione una opción</option>
 							</select>
-							<label for="puntos" class="form_label">Puntos</label>
-						</div>
-
-						<!-- Status -->
-						<div class="form-group form_info mb-3">
-							<select class="form-select form_input" name="estado" id="estado">
-								<option disabled selected>Seleccione una opción</option>
-							</select>
-							<label for="estado" class="form_label">Estado</label>
+							<label for="posicion" class="form_label">Posición a Auditar</label>
 						</div>
 					</div>
+
+					
 					
 					<div>
+						<!-- Details table -->
+						<table id="detalleAuditoria" class="table table-bordered table-hover table-striped table-sm display" cellpadding="0" width="100%">
+							<thead class="bg-black text-light text-center align-middle">
+								<tr>
+									<th>Posición</th>
+									<th># Punto</th>
+									<th>Descripción</th>
+									<th width="15%">Acciones</th>
+								</tr>
+							</thead>
+							<tbody class="text-center align-middle">
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tbody>
+						</table>
+
 						<!-- Text area for comments -->
 						<div class="form-group form_info mb-1">
 							<textarea class="form-control form_textarea" id="comentarios" cols="30" rows="1" placeholder="Escriba un Comentario" style="resize:none; height: 80px;"></textarea>
@@ -66,24 +62,7 @@
 							<input type="file" name="photo" class="d-none" id="imagen-auditoria">
 							<label for="imagen-auditoria" class="form-control btn btn-primary">Agregar una imagen</label>
 						</div>
-	
-						<!-- Details table -->
-						<table id="detalleAuditoria" class="table table-bordered table-hover table-striped table-sm display nowrap" cellpadding="0" width="100%">
-							<thead class="bg-black text-light text-center align-middle">
-								<tr>
-									<th>Area Auditada</th>
-									<th>Punto Auditado</th>
-									<th>Estado</th>
-									<th>Acciones</th>
-								</tr>
-							</thead>
-							<tbody class="text-center align-middle">
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tbody>
-						</table>
+
 	
 						<!-- Images container -->
 						<div class="card mt-3">

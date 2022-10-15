@@ -24,16 +24,19 @@ class Boarding extends controllers
 	public function getAuditDetail()
 	{
 		$id = intval(cleanString($_GET['id']));
-		$req = $this->model->getAuditDetail($id);
+		$req = $this->model->getAuditDetail($id, 2);
 		for ($i=0; $i < count($req); $i++) {
-			$req[$i]['Imagenes'] = ('
-				<button class="btn btn-outline-primary btn-sm" title="Editar">
-					<i class="fa-solid fa-eye"></i>
-				</button>				
-			');
 			$req[$i]['Acciones'] = ('
-				<button class="btn btn-outline-success btn-sm" title="Editar">
-					<i class="fa-solid fa-pen-to-square"></i>
+				<button class="btn btn-success btn-lg" title="Pasa">
+					<i class="fa-solid fa-check"></i>
+				</button>
+
+				<button class="btn btn-danger btn-lg" title="Falla">
+					<i class="fa-solid fa-x"></i>
+				</button>
+
+				<button class="btn btn-secondary btn-lg" title="No Aplica">
+					<i class="fa-solid fa-naira-sign"></i>
 				</button>
 			');
 		}

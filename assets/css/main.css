@@ -16,7 +16,7 @@
 
 /* Close modal button */
 .btn-close:hover {
-	background-color: rgb(241, 241, 241);
+	background-color: rgb(241, 241, 241,0.6);
 }
 
 /* Upload products photos */

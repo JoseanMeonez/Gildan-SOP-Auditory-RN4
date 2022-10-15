@@ -22,11 +22,18 @@ class boardingModel extends Connection
 		return $req;
 	}
 
-	public function getAuditDetail(int $id)
+	public function getAuditDetail(int $id, int $area)
 	{
-		$query = "SELECT * FROM detalle_auditoria WHERE Nro_Auditoria = $id";
+		$sql = ("SELECT 
+			p.Punto_ID as punto_id,
+			po.Posicion_Desc as posicion_desc,
+			p.No_Punto as punto,
+			p.Descripcion as punto_desc
+			FROM puntos p
+			INNER JOIN posiciones po ON po.Posicion_ID = p.Posicion_ID
+			WHERE p.Status = 1 AND p.Area_ID = $area
+		");
 
-		$req = $this->select_all($query);
-		return $req;
+		return $this->select_all($sql);
 	}
 }

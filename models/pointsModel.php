@@ -13,12 +13,13 @@ class pointsModel extends Connection
 		$sql = ("SELECT 
 			p.Punto_ID,
 			a.Area_Nombre as area,
-			p.Posicion_ID as posicion,
+			po.Posicion_Desc as posicion,
 			p.No_Punto as punto,
 			p.Descripcion as descripcion
 			FROM puntos p
 			INNER JOIN area a ON a.Area_ID = p.Area_ID
-			WHERE status = 1 AND p.Area_ID = 2
+			INNER JOIN posiciones po ON po.Posicion_ID = p.Posicion_ID
+			WHERE p.Status = 1 AND p.Area_ID = 2
 		");
 
 		return parent::select_all($sql);

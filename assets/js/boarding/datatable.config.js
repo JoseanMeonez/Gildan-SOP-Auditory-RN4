@@ -1,4 +1,5 @@
 import { getSupervisorOption } from '../supervisor/functions.js'
+import { setComboBox } from "../positions/functions.js";
 
 // Datatable's filters
 export const datatableFilter = () => $('#tblBoarding thead tr').clone(true).addClass('filters').appendTo('#tblBoarding thead')
@@ -91,6 +92,8 @@ export const datatable = () => $('#tblBoarding').DataTable({
 		// Button to open a Modal
 		{
 			action: function () {
+				detailTable(1)
+				setComboBox(0,2,false,"#posicion")
 				getSupervisorOption("#supervisor")
 				$('#addAuditBoarding').modal('show');
 			},
@@ -151,32 +154,10 @@ export const detailTable = (id) => $('#detalleAuditoria').DataTable({
 	'language': {
 		'url': server + '/assets/json/spanish.json',
 	},
-	'dom': 'lBfrtip',
+	'dom': 'lfrtip',
 	'lengthMenu': [
-		[10, 25, 50, 100, -1],
-		[10 + " Registros", 25 + " Registros", "Mostrar Todos"]
-	],
-	'buttons': [
-		// Button export to Excel
-		{
-			'extend': 'excelHtml5',
-			'text': '<i class="fa-regular fa-file-excel fa-lg"></i>',
-			'title': 'Listado de usuarios',
-			'titleAttr': 'Excel',
-			'className': 'btn btnExcel btn-sm',
-			'exportOptions': {
-				'columns': [0, 1, 2, 3, 4, 5]
-			}
-		},
-		// Button to open a Modal
-		{
-			'action': function () {
-				console.log('This works!');
-			},
-			'text': '<i class="fa-solid fa-circle-plus fa-lg"></i> Agregar',
-			'titleAttr': 'Agregar detalle',
-			'className': 'btn btnNew btn-sm'
-		}
+		[10, 25, 50, -1],
+		["10 Registros", "25 Registros", "50 Registros", "Mostrar Todos"]
 	],
 	"ajax": {
 		"url": server + '/Boarding/getAuditDetail',
@@ -184,23 +165,15 @@ export const detailTable = (id) => $('#detalleAuditoria').DataTable({
 		"dataSrc": ''
 	},
 	"columns": [
-		{
-			'data': 'Area_Auditada'
-		},
-		{
-			'data': 'Punto_Auditado'
-		},
-		{
-			'data': 'Estado'
-		},
-		{
-			'data': 'Acciones'
-		}
+		{'data': 'posicion_desc'},
+		{'data': 'punto'},
+		{'data': 'punto_desc'},
+		{'data': 'Acciones'}
 	],
 	"bDestroy": true,
 	"iDisplayLength": 10,
 	"order": [
-		[0, "asc"]
+		[1, "asc"]
 	],
 	"orderCellsTop": true,
 	"fixedHeader": true,

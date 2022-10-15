@@ -10,7 +10,6 @@ window.addEventListener('load', () => {
 	fn.mediaQuerys()
 	
 	// Create modal tables and content:
-	config.detailTable(1)
 	fn.addImageComponent()
 })
 
