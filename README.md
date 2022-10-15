@@ -1,5 +1,5 @@
 # Basics Intructions
-### Created by Andrés Meoñez for Gildan Hosiery Rio Nance :man_technologist:
+### Created for Gildan Hosiery Rio Nance (RN4) :man_technologist:
 
 ## Libraries in use:
 - Main JS Libraries
@@ -33,6 +33,6 @@
 
 ## Environment Variables
 The environment variables are vital to the operation of the software. 
-## Controllers Sintax
+## Controllers
 
-## Models Sintax
+## Models
