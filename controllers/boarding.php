@@ -23,8 +23,11 @@ class Boarding extends controllers
 
 	public function getAuditDetail()
 	{
+		// Here I'm Capsuling the received data
 		$id = intval(cleanString($_GET['id']));
 		$req = $this->model->getAuditDetail($id, 2);
+
+		// Adding the selection button to data
 		for ($i=0; $i < count($req); $i++) {
 			$req[$i]['Acciones'] = ('
 				<button class="btn btn-success btn-lg" title="Pasa">

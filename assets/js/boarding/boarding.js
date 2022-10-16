@@ -6,8 +6,10 @@ window.addEventListener('load', () => {
 	config.datatable()
 	config.datatableFilter()
 	
-	// Modal media query
-	fn.mediaQuerys()
+	// Modal media querys and features
+	fn.mediaQuery()
+	fn.showAndHideTable()
+	fn.ComboxesManager(config.detailTable)
 	
 	// Create modal tables and content:
 	fn.addImageComponent()

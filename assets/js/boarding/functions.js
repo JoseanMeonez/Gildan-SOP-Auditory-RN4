@@ -1,20 +1,63 @@
 // Responsive modal's margins function
-export function mediaQuerys() {
-	let mediaQuery = window.matchMedia("(max-width: 768px)")
+export function mediaQuery() {
+	let mediaQuery1 = window.matchMedia("(max-width: 768px)")
+	let mediaQuery2 = window.matchMedia("(min-width: 769px)")
 
-	mediaQuery.addListener((e) => {
+	if(mediaQuery2.matches) {
+		$(".contenido-modal").addClass("mx-5")
+		$(".contenido-modal").addClass("g-3");
+		$(".modal-body").addClass("mx-5");
+	}
+
+	mediaQuery1.addListener((e) => {
+		e.preventDefault()
 		if(e.matches) {
-			document.querySelector(".contenido-modal").classList.remove("mx-5")
-			document.querySelector(".contenido-modal").classList.remove("g-3")
-			document.querySelector(".modal-body").classList.remove("mx-5")
+			$(".contenido-modal").removeClass("mx-5")
+			$(".contenido-modal").removeClass("g-3");
+			$(".modal-body").removeClass("mx-5");
 		} else {
-			document.querySelector(".contenido-modal").classList.add("mx-5")
-			document.querySelector(".contenido-modal").classList.add("g-3")
-			document.querySelector(".modal-body").classList.add("mx-5")
+			$(".contenido-modal").addClass("mx-5")
+			$(".contenido-modal").addClass("g-3");
+			$(".modal-body").addClass("mx-5");
 		}
 	})
 
 	return true
+}
+
+// This controls the comboboxes actions
+export function ComboxesManager(detailTable) {
+	$("#posicion").attr("disabled", true);
+	
+	// This enable or disable the position combox according with the supervisor combobox value
+	$("#supervisor").change(function () {
+		if ($("#supervisor").val() > 0) {
+			return $("#posicion").attr("disabled", false);
+		} else {
+			return $("#posicion").attr("disabled", true);
+		}
+	})
+
+	// This execute the details table accorfing with the position combobox value
+	$("#posicion").change(function () {
+		if ($("#posicion").val() > 0) {
+			detailTable($("#posicion").val())
+			if ( $(".detail_table").first().is( ":hidden" ) ) {
+				return $(".detail_table").slideDown( "slow" )
+			}
+		}
+	})
+}
+
+export function showAndHideTable() {
+	$(".detail_table").hide()
+	$("#showTable").click(function () {
+    if ( $(".detail_table").first().is( ":hidden" ) ) {
+      return $(".detail_table").slideDown( "slow" )
+    } else {
+      return $(".detail_table").slideUp( "slow" )
+    }
+  });
 }
 
 // This add the needed container to show the images
@@ -41,10 +84,10 @@ export function addImageComponent() {
 			document.querySelector("#img-comment").classList.add("d-none")
 			document.querySelector("#imagesContainer").appendChild(newElement);
 			document.querySelector("#div" + key + " .btnUploadFile").click();
-			inputFile();
+			return inputFile();
 		}
 	}
-	inputFile();
+	return inputFile();
 }
 
 // Adding the image container and sending to controller
@@ -97,7 +140,7 @@ export function inputFile() {
 								document.querySelector('.toast-body').textContent = data.response
 								
 								formatToast(data.status, data.color)
-								toast.show()
+								return toast.show()
 							}
 						}
 					});

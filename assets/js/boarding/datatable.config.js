@@ -92,7 +92,7 @@ export const datatable = () => $('#tblBoarding').DataTable({
 		// Button to open a Modal
 		{
 			action: function () {
-				detailTable(1)
+				// detailTable(1)
 				setComboBox(0,2,false,"#posicion")
 				getSupervisorOption("#supervisor")
 				$('#addAuditBoarding').modal('show');
@@ -151,36 +151,36 @@ export const datatable = () => $('#tblBoarding').DataTable({
 
 // Detail Datatable properties
 export const detailTable = (id) => $('#detalleAuditoria').DataTable({
-	'language': {
-		'url': server + '/assets/json/spanish.json',
+	language: {
+		url: server + '/assets/json/spanish.json',
 	},
-	'dom': 'lfrtip',
-	'lengthMenu': [
+	dom: 'lfrtip',
+	lengthMenu: [
 		[10, 25, 50, -1],
 		["10 Registros", "25 Registros", "50 Registros", "Mostrar Todos"]
 	],
-	"ajax": {
-		"url": server + '/Boarding/getAuditDetail',
-		"data": { id: id },
-		"dataSrc": ''
+	ajax: {
+		url: server + '/Boarding/getAuditDetail',
+		data: { id: id },
+		dataSrc: ''
 	},
-	"columns": [
-		{'data': 'posicion_desc'},
-		{'data': 'punto'},
-		{'data': 'punto_desc'},
-		{'data': 'Acciones'}
+	columns: [
+		{data: 'posicion_desc'},
+		{data: 'punto'},
+		{data: 'punto_desc'},
+		{data: 'Acciones'}
 	],
-	"bDestroy": true,
-	"iDisplayLength": 10,
-	"order": [
+	bDestroy: true,
+	iDisplayLength: 10,
+	order: [
 		[1, "asc"]
 	],
-	"orderCellsTop": true,
-	"fixedHeader": true,
-	"responsive": {
-		"details": {
-			"display": $.fn.dataTable.Responsive.display.modal({
-				"header": function (row) {
+	orderCellsTop: true,
+	fixedHeader: true,
+	responsive: {
+		details: {
+			display: $.fn.dataTable.Responsive.display.modal({
+				header: function (row) {
 					var data = row.data();
 					return 'Detalle de la Auditoria';
 				}

@@ -5,8 +5,8 @@
 				<h3 class="modal-title w-100 text-center fst-normal">Añadir nueva auditoria Boarding</h3>
 				<button type="button" class="rounded-circle p-3 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<div class="modal-body mx-5">
-				<div class="row contenido-modal mx-5 g-3">
+			<div class="modal-body">
+				<div class="row contenido-modal">
 
 					<!-- Column 1 inputs -->
 					<div class="col-md">
@@ -32,25 +32,29 @@
 					</div>
 
 					
-					
 					<div>
+						<!-- Column 3 for button -->
+						<button class="btn btn-success mb-1" id="showTable">Mostrar tabla</button>
+
 						<!-- Details table -->
-						<table id="detalleAuditoria" class="table table-bordered table-hover table-striped table-sm display" cellpadding="0" width="100%">
-							<thead class="bg-black text-light text-center align-middle">
-								<tr>
-									<th>Posición</th>
-									<th># Punto</th>
-									<th>Descripción</th>
-									<th width="15%">Acciones</th>
-								</tr>
-							</thead>
-							<tbody class="text-center align-middle">
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tbody>
-						</table>
+						<div class="detail_table">
+							<table id="detalleAuditoria" class="table table-bordered table-hover table-striped table-sm display" cellpadding="0" width="100%">
+								<thead class="bg-black text-light text-center align-middle">
+									<tr>
+										<th>Posición</th>
+										<th># Punto</th>
+										<th>Descripción</th>
+										<th width="15%">Acciones</th>
+									</tr>
+								</thead>
+								<tbody class="text-center align-middle">
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tbody>
+							</table>
+						</div>
 
 						<!-- Text area for comments -->
 						<div class="form-group form_info mb-1">

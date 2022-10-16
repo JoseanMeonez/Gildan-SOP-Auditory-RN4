@@ -31,7 +31,7 @@ class boardingModel extends Connection
 			p.Descripcion as punto_desc
 			FROM puntos p
 			INNER JOIN posiciones po ON po.Posicion_ID = p.Posicion_ID
-			WHERE p.Status = 1 AND p.Area_ID = $area
+			WHERE p.Status = 1 AND p.Area_ID = $area AND p.Posicion_ID = $id
 		");
 
 		return $this->select_all($sql);
