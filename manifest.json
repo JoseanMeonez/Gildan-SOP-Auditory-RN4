@@ -1,16 +1,16 @@
 {
   "name": "Gildan RN4 SOP",
   "short_name": "RN4 SOP",
-  "start_url": "/home/dashboard",
+  "start_url": "/login",
   "display": "standalone",
   "background_color": "#0039b3",
   "theme_color": "#0039b3",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "images/icons/icon-72x72.png",
+      "src": "images/icons/login.png",
       "type": "image/png",
-      "sizes": "72x72"
+      "sizes": "512x512"
     }
   ]
 }

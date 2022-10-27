@@ -22,7 +22,7 @@ class boardingModel extends Connection
 		return $req;
 	}
 
-	public function getAuditDetail(int $id, int $area)
+	public function getAuditDetailTemp(int $id, int $area)
 	{
 		$sql = ("SELECT 
 			p.Punto_ID as punto_id,
@@ -31,9 +31,24 @@ class boardingModel extends Connection
 			p.Descripcion as punto_desc
 			FROM puntos p
 			INNER JOIN posiciones po ON po.Posicion_ID = p.Posicion_ID
-			WHERE p.Status = 1 AND p.Area_ID = $area AND p.Posicion_ID = $id
+			WHERE p.Status = 1 AND p.Area_ID = $area AND p.Posicion_ID = $id AND NOT EXISTS(SELECT Punto_Auditado FROM detalle_auditoria_tmp d WHERE p.Punto_ID = d.Punto_Auditado)
 		");
 
 		return $this->select_all($sql);
+	}
+
+	public function setTempAudit(int $user, int $supervisor, int $point, int $position, int $result, int $month){
+		$sql = "CALL ADD_TMP_AUDIT_DETAIL(?, ?, ?, ?, ?, ?, ?)";
+		$data = array(2, $position, $supervisor, $user, $month, $point, $result);
+
+		return $this->insert($sql, $data);
+	}
+
+	public function setTempImage($name, int $user)
+	{
+		$sql = "CALL ADD_TMP_IMAGE('$name', $user, 2)";
+		$response = $this->select($sql);
+
+		return $response;
 	}
 }

@@ -19,7 +19,7 @@ export const datatable = () => $('#tblBoarding').DataTable({
 		]
 	],
 	ajax: {
-		url: server + '/Boarding/getAudits',
+		url: server + '/boarding/getAudits',
 		dataSrc: ''
 	},
 	columns: [
@@ -160,7 +160,7 @@ export const detailTable = (id) => $('#detalleAuditoria').DataTable({
 		["10 Registros", "25 Registros", "50 Registros", "Mostrar Todos"]
 	],
 	ajax: {
-		url: server + '/Boarding/getAuditDetail',
+		url: server + '/boarding/getAuditDetailTemp',
 		data: { id: id },
 		dataSrc: ''
 	},

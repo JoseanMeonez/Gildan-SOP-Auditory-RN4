@@ -1,5 +1,5 @@
 <?php
-class Points extends controllers
+class points extends controllers
 {
 	public function __construct()
 	{

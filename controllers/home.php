@@ -90,6 +90,7 @@ class home extends controllers
 	public function points($area)
 	{
 		if ($area == 'Dyeing' or $area == 'Boarding' or $area == 'Knitting') {
+			$area = strtolower($area);
 			$data['page_tab'] = 'Puntos '.$area;
 			$data['page_favicon'] = 'favicon.ico';
 			$data['page_title'] = 'Puntos de Auditoria '.$area;

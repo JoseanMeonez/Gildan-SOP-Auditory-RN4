@@ -25,6 +25,19 @@ function getToasts()
 	return require_once("views/toasts.phtml");
 }
 
+function getWeeks(int $month, int $year) {
+	$dayend = cal_days_in_month(CAL_GREGORIAN,$month,$year);
+
+	if ($month<10) {
+		$add = "-0";
+	} else { $add = "-"; }
+	
+	$date1 = $year.$add.$month."-01";
+	$date2 = $year.$add.$month."-".$dayend;
+	$weeks = date("W", strtotime($date2))-date("W", strtotime($date1)) + 1;
+	return $weeks;
+}
+
 function uploadImage(array $data, string $name)
 {
 	$url_temp = $data['tmp_name'];

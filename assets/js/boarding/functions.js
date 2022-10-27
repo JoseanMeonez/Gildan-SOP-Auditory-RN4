@@ -128,11 +128,13 @@ export function inputFile() {
 						success: function (r) {
 							let data = JSON.parse(r)
 
-							if (data.status) {
-								previmg.innerHTML = `<img src="${urlObj}">`;
-								document.querySelector("#" + parentid + " .btnDeleteFile").setAttribute("imgname", name);
-								// document.querySelector("#" + parentid + " .btnUploadFile").classList.add("d-none");
-								// document.querySelector("#" + parentid + " .btnDeleteFile").classList.remove("d-none");
+							if (data) {
+								if (data.status) {
+									previmg.innerHTML = `<img src="${urlObj}">`;
+									document.querySelector("#" + parentid + " .btnDeleteFile").setAttribute("imgname", name);
+									// document.querySelector("#" + parentid + " .btnUploadFile").classList.add("d-none");
+									// document.querySelector("#" + parentid + " .btnDeleteFile").classList.remove("d-none");
+								}
 								
 								// Filling toast
 								document.querySelector('.toast-title').textContent = data.header

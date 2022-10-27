@@ -1,5 +1,5 @@
 <?= 
-	component('Header', $data);
+	component('header', $data);
 ?>
 
 <!-- Main -->
