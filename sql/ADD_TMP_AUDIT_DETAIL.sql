@@ -21,9 +21,10 @@ DELIMITER $$
 			-- Setting counting
 			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 0 AND User_ID = user);
 			SET passes = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 1 AND User_ID = user);
+			SET result = (SELECT ((SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) / passes));
 
 			-- Updating audit table
-			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails WHERE a.User_ID = User_ID AND a.Area_ID = area;
+			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
 		ELSE
 			-- Creating tmp audit
 			INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
@@ -39,9 +40,10 @@ DELIMITER $$
 			-- Setting counting
 			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 0 AND User_ID = user);
 			SET passes = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 1 AND User_ID = user);
+			SET result = (SELECT ((SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) / passes));
 
 			-- Updating audit table
-			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails WHERE a.User_ID = User_ID AND a.Area_ID = area;
+			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
 		END IF;
 
   END;$$
