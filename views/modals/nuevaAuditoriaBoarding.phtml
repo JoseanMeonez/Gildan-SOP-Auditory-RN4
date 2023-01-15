@@ -6,80 +6,121 @@
 				<button type="button" class="rounded-circle p-3 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<div class="row contenido-modal">
+				<ul class="nav nav-pills nav-fill mx-5 mb-3" id="pills-tab" role="tablist">
+					<li class="nav-item" role="presentation">
+						<button class="nav-link active fw-bold" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Auditar</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link fw-bold" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Ver Auditoria</button>
+					</li>
+				</ul>
+				<div class="tab-content" id="pills-tabContent">
+					<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
 
-					<!-- Column 1 inputs -->
-					<div class="col-md">
-						<!-- Supervisor -->
-						<div class="form-group form_info mb-3">
-							<select class="form-select form_input" name="supervisor" id="supervisor">
-								<option id="default_supoption" disabled selected>Seleccione una opción</option>
-							</select>
-							<label for="supervisor" class="form_label">Supervisor</label>
-						</div>
+						<div class="row contenido-modal tab-content">
+							<!-- Column 1 inputs -->
+							<div class="col-md">
+								<!-- Supervisor -->
+								<div class="form-group form_info mb-3">
+									<select class="form-select form_input" name="supervisor" id="supervisor">
+										<option id="default_supoption" disabled selected>Seleccione una opción</option>
+									</select>
+									<label for="supervisor" class="form_label">Supervisor</label>
+								</div>
 
-					</div>
-
-					<!-- Column 2 inputs -->
-					<div class="col-md">
-						<!-- Position -->
-						<div class="form-group form_info mb-3">
-							<select class="form-select form_input" name="posicion" id="posicion">
-								<option disabled selected>Seleccione una opción</option>
-							</select>
-							<label for="posicion" class="form_label">Posición a Auditar</label>
-						</div>
-					</div>
-
-					
-					<div>
-						<!-- Column 3 for button -->
-						<button class="btn btn-success mb-1" id="showTable">Mostrar tabla</button>
-
-						<!-- Details table -->
-						<div class="detail_table">
-							<table id="detalleAuditoria" class="table table-bordered table-hover table-striped table-sm display" cellpadding="0" width="100%">
-								<thead class="bg-black text-light text-center align-middle">
-									<tr>
-										<th>Posición</th>
-										<th># Punto</th>
-										<th>Descripción</th>
-										<th width="25%">Acciones</th>
-									</tr>
-								</thead>
-								<tbody class="text-center align-middle">
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tbody>
-							</table>
-						</div>
-
-						<!-- Text area for comments -->
-						<div class="form-group form_info mb-1">
-							<textarea class="form-control form_textarea" id="comentarios" cols="30" rows="1" placeholder="Escriba un Comentario" style="resize:none; height: 80px;"></textarea>
-						</div>
-	
-						<!-- Add Images button -->
-						<div class="form-group form_info mb-3">
-							<input type="file" name="photo" class="d-none" id="imagen-auditoria">
-							<label for="imagen-auditoria" class="form-control btn btn-primary">Agregar una imagen</label>
-						</div>
-
-	
-						<!-- Images container -->
-						<div class="card mt-3">
-							<div class="card-header">
-								<h5 class="text-center">Imagenes</h5>
 							</div>
-							<div class="card-body">
-								<p class="card-text" id="img-comment">No se ha agregado ninguna imagen</p>
-								<div class="justify-content-center" id="imagesContainer"></div>
+
+							<!-- Column 2 inputs -->
+							<div class="col-md">
+								<!-- Position -->
+								<div class="form-group form_info mb-3">
+									<select class="form-select form_input" name="posicion" id="posicion">
+										<option disabled selected>Seleccione una opción</option>
+									</select>
+									<label for="posicion" class="form_label">Posición a Auditar</label>
+								</div>
 							</div>
+
+
+							<div>
+								<!-- Column 3 for button -->
+								<button class="btn btn-success mb-1" id="showTable">Mostrar tabla</button>
+
+								<!-- Details table -->
+								<div class="detail_table">
+									<table id="detalleAuditoria" class="table table-bordered table-hover table-striped table-sm display" cellpadding="0" width="100%">
+										<thead class="bg-black text-light text-center align-middle">
+											<tr>
+												<th>Posición</th>
+												<th># Punto</th>
+												<th>Descripción</th>
+												<th width="25%">Acciones</th>
+											</tr>
+										</thead>
+										<tbody class="text-center align-middle">
+											<td></td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tbody>
+									</table>
+								</div>
+
+								<!-- Text area for comments -->
+								<div class="form-group form_info mb-1">
+									<textarea class="form-control form_textarea" id="comentarios" cols="30" rows="1" placeholder="Escriba un Comentario" style="resize:none; height: 80px;"></textarea>
+								</div>
+
+								<!-- Add Images button -->
+								<div class="form-group form_info mb-3">
+									<input type="file" name="photo" class="d-none" id="imagen-auditoria">
+									<label for="imagen-auditoria" class="form-control btn btn-primary">Agregar una imagen</label>
+								</div>
+
+
+								<!-- Images container -->
+								<div class="card mt-3">
+									<div class="card-header">
+										<h5 class="text-center">Imagenes</h5>
+									</div>
+									<div class="card-body">
+										<p class="card-text" id="img-comment">No se ha agregado ninguna imagen</p>
+										<div class="justify-content-center" id="imagesContainer"></div>
+									</div>
+								</div>
+							</div>
+
 						</div>
 					</div>
 
+					<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+						<table id="tbl-auditing" class="table table-bordered table-hover table-striped table-sm display nowrap" cellpadding="0" width="100%">
+							<thead class="bg bg-black text-light text-center align-middle">
+								<tr>
+									<th>No.</th>
+									<th>Fecha</th>
+									<th>Semana</th>
+									<th>Mes</th>
+									<th>Area</th>
+									<th>Pasa</th>
+									<th>Falla</th>
+									<th>% Cumplimiento</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody class="text-center align-middle">
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 
