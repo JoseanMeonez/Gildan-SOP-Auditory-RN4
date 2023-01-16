@@ -189,3 +189,21 @@ export const detailTable = (id) => $('#detalleAuditoria').DataTable({
 		}
 	}
 });
+
+// Current Auditory table
+export const current_audit = () => $('#current-audit-tab').click( function () {
+	$.ajax({
+		type: "get",
+		url: server + '/boarding/getAuditTemp',
+		success: function (r) {
+			let data = JSON.parse(r)
+			$("#failed-p").text(data[0].Falla)
+			$("#passed-p").text(data[0].Pasa)
+			$("#audited-p").text(data[0].Auditados)
+			$("#week-a").text(data[0].Semana)
+			$("#month-a").text(data[0].Mes)
+			$("#result-a").text(data[0].Resultado)
+
+		}
+	});
+})

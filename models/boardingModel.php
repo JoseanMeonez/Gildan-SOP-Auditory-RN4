@@ -44,6 +44,13 @@ class boardingModel extends Connection
 		return $this->insert($sql, $data);
 	}
 
+	public function getTempAudit(int $user)
+	{
+		$sql = "SELECT au.Semana, au.Mes, au.Pasa, au.Falla, au.Resultado, COUNT(d.Punto_Auditado) as Auditados FROM auditorias_tmp au INNER JOIN detalle_auditoria_tmp d ON au.Id_Auditoria = d.Nro_auditoria WHERE au.User_ID = $user AND d.User_ID = $user";
+		
+		return $this->select_all($sql);
+	}
+
 	public function setTempImage($name, int $user)
 	{
 		$sql = "CALL ADD_TMP_IMAGE('$name', $user, 2)";

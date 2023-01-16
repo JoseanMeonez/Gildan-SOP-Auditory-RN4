@@ -10,6 +10,7 @@ window.addEventListener('load', () => {
 	fn.mediaQuery()
 	fn.showAndHideTable()
 	fn.ComboxesManager(config.detailTable)
+	config.current_audit()
 	
 	// Create modal tables and content:
 	fn.addImageComponent()

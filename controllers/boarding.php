@@ -132,4 +132,16 @@ class boarding extends controllers
 		echo json_encode($res, JSON_UNESCAPED_UNICODE);
 		die;
 	}
+
+	public function getAuditTemp()
+	{
+		session_start();
+		date_default_timezone_set('America/Tegucigalpa');
+
+		$user = $_SESSION['userdata']['usr_id'];
+		$req = $this->model->getTempAudit($user);
+
+		echo json_encode($req, JSON_UNESCAPED_UNICODE);
+		die;
+	}
 }
