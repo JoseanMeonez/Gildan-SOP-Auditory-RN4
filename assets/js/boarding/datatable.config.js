@@ -202,7 +202,7 @@ export const current_audit = () => $('#current-audit-tab').click( function () {
 			$("#audited-p").text(data[0].Auditados)
 			$("#week-a").text(data[0].Semana)
 			$("#month-a").text(data[0].Mes)
-			$("#result-a").text(data[0].Resultado)
+			$("#result-a").text(parseFloat(new Intl.NumberFormat('de-DE', { style: 'percent' }).format(data[0].Resultado)) + "%")
 
 		}
 	});

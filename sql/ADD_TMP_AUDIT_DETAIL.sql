@@ -21,7 +21,7 @@ DELIMITER $$
 			-- Setting counting
 			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 0 AND User_ID = user);
 			SET passes = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 1 AND User_ID = user);
-			SET result = (SELECT ((SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) / passes));
+			SET result = (SELECT (passes / (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) ));
 
 			-- Updating audit table
 			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
@@ -40,7 +40,7 @@ DELIMITER $$
 			-- Setting counting
 			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 0 AND User_ID = user);
 			SET passes = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 1 AND User_ID = user);
-			SET result = (SELECT ((SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) / passes));
+			SET result = (SELECT (passes / (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user)));
 
 			-- Updating audit table
 			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
