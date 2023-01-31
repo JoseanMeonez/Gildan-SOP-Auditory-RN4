@@ -30,17 +30,12 @@ class boarding extends controllers
 		// Adding the selection button to data
 		for ($i=0; $i < count($req); $i++) {
 			$req[$i]['Acciones'] = ('
-				<button class="btn btn-success btn-lg b-'.bin2hex($req[$i]["punto_id"]).'" title="Pasa" onclick="pointAuditAction(`'.bin2hex($req[$i]["punto_id"]).'`, 1)">
-					<i class="fa-solid fa-check"></i>
-				</button>
-
-				<button class="btn btn-danger btn-lg b-'.bin2hex($req[$i]["punto_id"]).'" title="Falla" onclick="pointAuditAction(`'.bin2hex($req[$i]["punto_id"]).'`, 0)">
-					<i class="fa-solid fa-x"></i>
-				</button>
-
-				<button class="btn btn-secondary btn-lg b-'.bin2hex($req[$i]["punto_id"]).'" title="No Aplica" onclick="pointAuditAction(`'.bin2hex($req[$i]["punto_id"]).'`, 2)">
-					<i class="fa-solid fa-naira-sign"></i>
-				</button>
+				<select class="form-select form_input point_actions" id="'.bin2hex($req[$i]["punto_id"]).'">
+					<option disabled selected>Seleccione una opción</option>
+					<option value="1" lt="'.bin2hex($req[$i]["punto_id"]).'">Pasa</option>
+					<option value="0" lt="'.bin2hex($req[$i]["punto_id"]).'">Falla</option>
+					<option value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
+				</select>
 			');
 		}
 

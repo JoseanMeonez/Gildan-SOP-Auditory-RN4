@@ -181,3 +181,33 @@ export function deleteImage(elementid) {
 		// }
 	// }
 }
+
+export function point_action() {
+	$(document).on("change",".point_actions",function () {
+		let supervisor = $("#supervisor").val()
+		let position = $("#posicion").val()
+		let id = this.getAttribute('id')
+		let auditResult = $(".point_actions").val();
+
+		$.ajax({
+			type: "post",
+			url: server + "/boarding/setTempAudit",
+			data: {
+				pid: id,
+				res: auditResult,
+				sup: supervisor,
+				pos: position
+			},
+			success: (r) => {
+				let data = JSON.parse(r)
+	
+				$('.toast-title').text(data.title)
+				$('.toast-subtitle').text(data.subtitle)
+				$('.toast-body').text(data.body)
+				formatToast(data.status, data.color)
+				$('#detalleAuditoria').DataTable().ajax.reload()
+				return toast.show()	
+			}
+		})
+	})
+}
