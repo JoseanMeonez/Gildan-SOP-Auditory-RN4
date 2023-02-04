@@ -211,3 +211,13 @@ export function point_action() {
 		})
 	})
 }
+
+export function save_audit(id) {
+	$(document).on("click",".point_actions",function () {
+
+	}
+}
+
+export function clear_audit(id) {
+
+}
