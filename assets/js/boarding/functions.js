@@ -189,6 +189,10 @@ export function point_action() {
 		let id = this.getAttribute('id')
 		let auditResult = $(".point_actions").val();
 
+		if(auditResult == 0) {
+			document.querySelector(".add_photo").click()
+		}
+
 		$.ajax({
 			type: "post",
 			url: server + "/boarding/setTempAudit",
@@ -200,24 +204,55 @@ export function point_action() {
 			},
 			success: (r) => {
 				let data = JSON.parse(r)
-	
+
 				$('.toast-title').text(data.title)
 				$('.toast-subtitle').text(data.subtitle)
 				$('.toast-body').text(data.body)
 				formatToast(data.status, data.color)
 				$('#detalleAuditoria').DataTable().ajax.reload()
-				return toast.show()	
+				
+				return toast.show()
 			}
 		})
 	})
 }
 
-export function save_audit(id) {
-	$(document).on("click",".point_actions",function () {
-
-	}
+export function newPhoto () {
+	$(document).on("click",".add_photo",function (e) {
+		e.preventDefault()
+		let key = Date.now();
+		let newElement = document.createElement("div");
+		newElement.id = "div" + key;
+		newElement.innerHTML = (`
+			<div class="prevImage rounded shadow-sm">
+				<img src="${server}/assets/images/loading.svg" style="width:40%;">
+			</div>
+			<input type="file" name="photo" id="img${key}" class="inputUploadFile btn">
+			<label for="img${key}" class="btnUploadFile btn btn-sm btn-success shadow-sm">
+				<i class="fas fa-upload"></i>
+			</label>
+			<button type="button" class="btnDeleteFile btn btn-sm btn-danger shadow-sm" onclick="deleteImage('#div${key}')">
+				<i class="fas fa-trash-alt"></i>
+			</button>
+		`);
+		document.querySelector("#img-comment").classList.add("d-none")
+		document.querySelector("#imagesContainer").appendChild(newElement);
+		document.querySelector("#div" + key + " .btnUploadFile").click();
+		return inputFile();
+	})
 }
 
-export function clear_audit(id) {
 
+
+
+export function save_audit() {
+	$(document).on("click","#guardarAuditoria",function () {
+		console.log(this)
+	})
+}
+
+export function clear_audit() {
+	$(document).on("click","#limpiarAuditoria",function () {
+		console.log(this)
+	})
 }

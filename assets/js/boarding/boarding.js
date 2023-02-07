@@ -14,6 +14,9 @@ window.addEventListener('load', () => {
 	
 	// Create modal tables and content:
 	fn.addImageComponent()
-	fn.point_action();
+	fn.point_action()
+	fn.save_audit()
+	fn.clear_audit()
+	fn.newPhoto()
 })
 
