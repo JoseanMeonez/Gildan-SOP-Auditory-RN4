@@ -1,5 +1,6 @@
 export const setComboBox = (id, area, selected, comboBoxId) => {
 	id = id || false
+	let comboBoxVal = $(comboBoxId).val() || false
 	
 	$.ajax({
 		type: "get",
@@ -21,6 +22,7 @@ export const setComboBox = (id, area, selected, comboBoxId) => {
 			// Filling select
 			if (selected == true) {$("#default_posoption").attr("selected", true)}
 			$(data).appendTo(comboBoxId)
+			if (comboBoxVal != false) {$(comboBoxId).val(comboBoxVal)}
 		},
 		error: (e) => {
 			return console.error(e.status, e.statusText, e.responseText);

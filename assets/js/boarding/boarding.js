@@ -17,6 +17,5 @@ window.addEventListener('load', () => {
 	fn.point_action()
 	fn.save_audit()
 	fn.clear_audit()
-	fn.newPhoto()
 })
 

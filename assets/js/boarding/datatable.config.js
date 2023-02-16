@@ -168,7 +168,8 @@ export const detailTable = (id) => $('#detalleAuditoria').DataTable({
 		{data: 'posicion_desc'},
 		{data: 'punto'},
 		{data: 'punto_desc'},
-		{data: 'Acciones'}
+		{data: 'acciones'},
+		{data: 'imagenes'}
 	],
 	bDestroy: true,
 	iDisplayLength: 10,

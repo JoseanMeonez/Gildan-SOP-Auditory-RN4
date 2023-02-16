@@ -29,17 +29,24 @@ class boarding extends controllers
 
 		// Adding the selection button to data
 		for ($i=0; $i < count($req); $i++) {
-			$req[$i]['Acciones'] = ('
+			$req[$i]['acciones'] = ('
 				<div class="m-1">
-					<select class="form-select form_input point_actions mb-1" id="'.bin2hex($req[$i]["punto_id"]).'">
+					<select class="form-select form_input point_actions" id="'.bin2hex($req[$i]["punto_id"]).'">
 						<option disabled selected>Resultado</option>
 						<option value="1" lt="'.bin2hex($req[$i]["punto_id"]).'">Pasa</option>
 						<option value="0" lt="'.bin2hex($req[$i]["punto_id"]).'">Falla</option>
 						<option value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
 					</select>
 
-					<input type="file" name="photo" class="add_photo d-none" id="imagen-auditoria">
-					<label for="imagen-auditoria" class="form-control btn btn-primary">Agregar una imagen</label>
+					<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
+					<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
+				</div>
+			');
+
+			$req[$i]['imagenes'] = ('
+				<div class="card-body">
+					<p class="card-text" id="img-comment">No se ha agregado ninguna imagen</p>
+					<div class="justify-content-center" id="imagesContainer'.bin2hex($req[$i]["punto_id"]).'"></div>
 				</div>
 			');
 		}

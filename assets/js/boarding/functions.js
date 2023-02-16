@@ -61,34 +61,34 @@ export function showAndHideTable() {
 }
 
 // This add the needed container to show the images
-export function addImageComponent() {
-	if (document.querySelector("#imagen-auditoria")) {
-		let btnAddImage = document.querySelector("#imagen-auditoria");
-		btnAddImage.onclick = function (e) {
-			e.preventDefault()
-			let key = Date.now();
-			let newElement = document.createElement("div");
-			newElement.id = "div" + key;
-			newElement.innerHTML = (`
-				<div class="prevImage rounded shadow-sm">
-					<img src="${server}/assets/images/loading.svg" style="width:40%;">
-				</div>
-				<input type="file" name="photo" id="img${key}" class="inputUploadFile btn">
-				<label for="img${key}" class="btnUploadFile btn btn-sm btn-success shadow-sm">
-					<i class="fas fa-upload"></i>
-				</label>
-				<button type="button" class="btnDeleteFile btn btn-sm btn-danger shadow-sm" onclick="deleteImage('#div${key}')">
-					<i class="fas fa-trash-alt"></i>
-				</button>
-			`);
-			document.querySelector("#img-comment").classList.add("d-none")
-			document.querySelector("#imagesContainer").appendChild(newElement);
-			document.querySelector("#div" + key + " .btnUploadFile").click();
-			return inputFile();
-		}
-	}
-	return inputFile();
-}
+// export function addImageComponent() {
+// 	if (document.querySelector("#imagen-auditoria")) {
+// 		let btnAddImage = document.querySelector("#imagen-auditoria");
+// 		btnAddImage.onclick = function (e) {
+// 			e.preventDefault()
+// 			let key = Date.now();
+// 			let newElement = document.createElement("div");
+// 			newElement.id = "div" + key;
+// 			newElement.innerHTML = (`
+// 				<div class="prevImage rounded shadow-sm">
+// 					<img src="${server}/assets/images/loading.svg" style="width:40%;">
+// 				</div>
+// 				<input type="file" name="photo" id="img${key}" class="inputUploadFile btn">
+// 				<label for="img${key}" class="btnUploadFile btn btn-sm btn-success shadow-sm">
+// 					<i class="fas fa-upload"></i>
+// 				</label>
+// 				<button type="button" class="btnDeleteFile btn btn-sm btn-danger shadow-sm" onclick="deleteImage('#div${key}')">
+// 					<i class="fas fa-trash-alt"></i>
+// 				</button>
+// 			`);
+// 			document.querySelector("#img-comment").classList.add("d-none")
+// 			document.querySelector("#imagesContainer").appendChild(newElement);
+// 			document.querySelector("#div" + key + " .btnUploadFile").click();
+// 			return inputFile();
+// 		}
+// 	}
+// 	return inputFile();
+// }
 
 // Adding the image container and sending to controller
 export function inputFile() {
@@ -209,7 +209,7 @@ export function point_action() {
 				$('.toast-subtitle').text(data.subtitle)
 				$('.toast-body').text(data.body)
 				formatToast(data.status, data.color)
-				$('#detalleAuditoria').DataTable().ajax.reload()
+				// $('#detalleAuditoria').DataTable().ajax.reload()
 				
 				return toast.show()
 			}
@@ -217,9 +217,11 @@ export function point_action() {
 	})
 }
 
-export function newPhoto () {
+// This add the needed container to show the images
+export function addImageComponent() {
 	$(document).on("click",".add_photo",function (e) {
 		e.preventDefault()
+		let id = this.getAttribute('binid')
 		let key = Date.now();
 		let newElement = document.createElement("div");
 		newElement.id = "div" + key;
@@ -236,7 +238,7 @@ export function newPhoto () {
 			</button>
 		`);
 		document.querySelector("#img-comment").classList.add("d-none")
-		document.querySelector("#imagesContainer").appendChild(newElement);
+		document.querySelector("#imagesContainer" + id).appendChild(newElement);
 		document.querySelector("#div" + key + " .btnUploadFile").click();
 		return inputFile();
 	})
