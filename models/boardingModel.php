@@ -28,10 +28,14 @@ class boardingModel extends Connection
 			p.Punto_ID as punto_id,
 			po.Posicion_Desc as posicion_desc,
 			p.No_Punto as punto,
-			p.Descripcion as punto_desc
+			p.Descripcion as punto_desc,
+			img.Image_name as img,
+			d.Estado as estado
 			FROM puntos p
 			INNER JOIN posiciones po ON po.Posicion_ID = p.Posicion_ID
-			WHERE p.Status = 1 AND p.Area_ID = $area AND p.Posicion_ID = $id AND NOT EXISTS(SELECT Punto_Auditado FROM detalle_auditoria_tmp d WHERE p.Punto_ID = d.Punto_Auditado)
+			LEFT JOIN images_tmp img ON img.Point_ID = p.Punto_ID
+			LEFT JOIN detalle_auditoria_tmp d ON d.Punto_Auditado = p.Punto_ID
+			WHERE p.Status = 1 AND p.Area_ID = $area AND p.Posicion_ID = $id
 		");
 
 		return $this->select_all($sql);

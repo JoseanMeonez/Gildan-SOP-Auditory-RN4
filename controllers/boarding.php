@@ -29,26 +29,83 @@ class boarding extends controllers
 
 		// Adding the selection button to data
 		for ($i=0; $i < count($req); $i++) {
-			$req[$i]['acciones'] = ('
-				<div class="m-1">
-					<select class="form-select form_input point_actions" id="'.bin2hex($req[$i]["punto_id"]).'">
-						<option disabled selected>Resultado</option>
-						<option value="1" lt="'.bin2hex($req[$i]["punto_id"]).'">Pasa</option>
-						<option value="0" lt="'.bin2hex($req[$i]["punto_id"]).'">Falla</option>
-						<option value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
-					</select>
+			$req[$i]['acciones'] = ('<div class="m-1">');
 
-					<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
-					<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
-				</div>
-			');
+			if ($req[$i]['estado'] == null) {
+				$req[$i]['acciones'] .= ('
+						<select class="form-select form_input point_actions" id="'.bin2hex($req[$i]["punto_id"]).'">
+							<option disabled selected>Resultado</option>
+							<option value="1" lt="'.bin2hex($req[$i]["punto_id"]).'">Pasa</option>
+							<option value="3" lt="'.bin2hex($req[$i]["punto_id"]).'">Falla</option>
+							<option value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
+						</select>
+	
+						<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
+						<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
+					</div>
+				');
+			} else if ($req[$i]['estado'] == 3) {
+				$req[$i]['acciones'] .= ('
+						<select class="form-select form_input point_actions" id="'.bin2hex($req[$i]["punto_id"]).'">
+							<option disabled>Resultado</option>
+							<option value="1" lt="'.bin2hex($req[$i]["punto_id"]).'">Pasa</option>
+							<option selected value="3" lt="'.bin2hex($req[$i]["punto_id"]).'">Falla</option>
+							<option value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
+						</select>
 
-			$req[$i]['imagenes'] = ('
-				<div class="card-body">
-					<p class="card-text" id="img-comment">No se ha agregado ninguna imagen</p>
-					<div class="justify-content-center" id="imagesContainer'.bin2hex($req[$i]["punto_id"]).'"></div>
-				</div>
-			');
+						<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
+						<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
+					</div>
+				');
+			} else if ($req[$i]['estado'] == 1) {
+				$req[$i]['acciones'] .= ('
+						<select class="form-select form_input point_actions" id="'.bin2hex($req[$i]["punto_id"]).'">
+							<option disabled selected>Resultado</option>
+							<option selected value="1" lt="'.bin2hex($req[$i]["punto_id"]).'">Pasa</option>
+							<option value="3" lt="'.bin2hex($req[$i]["punto_id"]).'">Falla</option>
+							<option value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
+						</select>
+
+						<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
+						<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
+					</div>
+				');
+			} else if ($req[$i]['estado'] == 2) {
+				$req[$i]['acciones'] .= ('
+						<select class="form-select form_input point_actions" id="'.bin2hex($req[$i]["punto_id"]).'">
+							<option disabled selected>Resultado</option>
+							<option value="1" lt="'.bin2hex($req[$i]["punto_id"]).'">Pasa</option>
+							<option value="3" lt="'.bin2hex($req[$i]["punto_id"]).'">Falla</option>
+							<option selected value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
+						</select>
+
+						<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
+						<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
+					</div>
+				');
+			}
+
+			if ($req[$i]['img'] != null) {
+				$req[$i]['imagenes'] = ('
+					<div class="prevImage rounded shadow-sm">
+						<img src="'.media.'/images/uploads/'.$req[$i]['img'].'" style="width:40%;">
+					</div>
+					<input type="file" name="photo" id="img'.bin2hex($req[$i]["punto_id"]).'" dataid="'.bin2hex($req[$i]["punto_id"]).'" class="inputUploadFile btn">
+					<label for="img'.bin2hex($req[$i]["punto_id"]).'" class="btnUploadFile btn btn-sm btn-success shadow-sm">
+						<i class="fas fa-upload"></i>
+					</label>
+					<button type="button" class="btnDeleteFile btn btn-sm btn-danger shadow-sm">
+						<i class="fas fa-trash-alt"></i>
+					</button>
+				');
+			} else {
+				$req[$i]['imagenes'] = ('
+					<div class="card-body">
+						<p class="card-text" id="img-comment">No se ha agregado ninguna imagen</p>
+						<div class="justify-content-center" id="imagesContainer'.bin2hex($req[$i]["punto_id"]).'"></div>
+					</div>
+				');
+			}
 		}
 
 		echo json_encode($req, JSON_UNESCAPED_UNICODE);
