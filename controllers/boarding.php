@@ -55,12 +55,13 @@ class boarding extends controllers
 		die;
 	}
 
-	public function addImageAudit()
+	public function addImageAudit(int $point_id)
 	{
 		session_start();
 		$imgName = '_img' . md5(date('d-m-Y H:m:s')) . '.jpg';
+		$point_id = hex2bin($point_id);
 
-		$req = $this->model->setTempImage($imgName, $_SESSION['userdata']['usr_id']);
+		$req = $this->model->setTempImage($imgName, $_SESSION['userdata']['usr_id'], $point_id);
 
 		if ($req[1] == 1) {
 			uploadImage($_FILES['photo'], $imgName);

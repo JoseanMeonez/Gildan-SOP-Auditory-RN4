@@ -7,16 +7,21 @@ DELIMITER $$
 		DECLARE fails INT;
 		DECLARE passes INT;
 		DECLARE result DOUBLE;
+		DECLARE verification INT;
 
 		-- Setting variables
 		SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
 		SET week = (SELECT Semana FROM auditorias WHERE Mes = month ORDER BY Id_Auditoria DESC LIMIT 1) + 1;
-
+		SET verification = (SELECT Detalle_id FROM detalle_auditoria_tmp d WHERE d.Punto_Auditado = point_id);
 
 		IF audit_id > 0 THEN
 			-- Inserting details
-			INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
-			VALUES(audit_id, pos, sup, user, point_id, state_a);
+			IF verification > 0 THEN
+				UPDATE detalle_auditoria_tmp d SET d.Estado = state_a WHERE d.Punto_Auditado = point_id;
+			ELSE
+				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
+				VALUES(audit_id, pos, sup, user, point_id, state_a);
+			END IF;
 
 			-- Setting counting
 			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 0 AND User_ID = user);

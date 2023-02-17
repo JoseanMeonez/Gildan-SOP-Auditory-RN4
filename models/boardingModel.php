@@ -51,9 +51,9 @@ class boardingModel extends Connection
 		return $this->select_all($sql);
 	}
 
-	public function setTempImage($name, int $user)
+	public function setTempImage($name, int $user, int $point)
 	{
-		$sql = "CALL ADD_TMP_IMAGE('$name', $user, 2)";
+		$sql = "CALL ADD_TMP_IMAGE('$name', $user, 2, $point)";
 		$response = $this->select($sql);
 
 		return $response;

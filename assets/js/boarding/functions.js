@@ -60,36 +60,6 @@ export function showAndHideTable() {
   });
 }
 
-// This add the needed container to show the images
-// export function addImageComponent() {
-// 	if (document.querySelector("#imagen-auditoria")) {
-// 		let btnAddImage = document.querySelector("#imagen-auditoria");
-// 		btnAddImage.onclick = function (e) {
-// 			e.preventDefault()
-// 			let key = Date.now();
-// 			let newElement = document.createElement("div");
-// 			newElement.id = "div" + key;
-// 			newElement.innerHTML = (`
-// 				<div class="prevImage rounded shadow-sm">
-// 					<img src="${server}/assets/images/loading.svg" style="width:40%;">
-// 				</div>
-// 				<input type="file" name="photo" id="img${key}" class="inputUploadFile btn">
-// 				<label for="img${key}" class="btnUploadFile btn btn-sm btn-success shadow-sm">
-// 					<i class="fas fa-upload"></i>
-// 				</label>
-// 				<button type="button" class="btnDeleteFile btn btn-sm btn-danger shadow-sm" onclick="deleteImage('#div${key}')">
-// 					<i class="fas fa-trash-alt"></i>
-// 				</button>
-// 			`);
-// 			document.querySelector("#img-comment").classList.add("d-none")
-// 			document.querySelector("#imagesContainer").appendChild(newElement);
-// 			document.querySelector("#div" + key + " .btnUploadFile").click();
-// 			return inputFile();
-// 		}
-// 	}
-// 	return inputFile();
-// }
-
 // Adding the image container and sending to controller
 export function inputFile() {
 	let inputUploadFile = document.querySelectorAll(".inputUploadFile");
@@ -98,6 +68,7 @@ export function inputFile() {
 			// Variables
 			let parentid = this.parentNode.getAttribute("id");
 			let fileid = this.getAttribute("id");
+			let point_id = this.getAttribute("dataid");
 			let uploadPhoto = document.querySelector("#" + fileid).value;
 			let fileimg = document.querySelector("#" + fileid).files;
 			let previmg = document.querySelector("#" + parentid + " .prevImage");
@@ -121,7 +92,7 @@ export function inputFile() {
 
 					$.ajax({
 						type: "post",
-						url: server + "/boarding/addImageAudit",
+						url: server + "/boarding/addImageAudit/"+point_id,
 						data: formData,
 						contentType: false,
 						processData: false,
@@ -229,7 +200,7 @@ export function addImageComponent() {
 			<div class="prevImage rounded shadow-sm">
 				<img src="${server}/assets/images/loading.svg" style="width:40%;">
 			</div>
-			<input type="file" name="photo" id="img${key}" class="inputUploadFile btn">
+			<input type="file" name="photo" id="img${key}" dataid="${id}" class="inputUploadFile btn">
 			<label for="img${key}" class="btnUploadFile btn btn-sm btn-success shadow-sm">
 				<i class="fas fa-upload"></i>
 			</label>
