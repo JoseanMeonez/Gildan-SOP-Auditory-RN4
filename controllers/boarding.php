@@ -40,7 +40,7 @@ class boarding extends controllers
 							<option value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
 						</select>
 	
-						<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
+						<input type="file" name="photo" id="add_photo'.bin2hex($req[$i]["punto_id"]).'" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
 						<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
 					</div>
 				');
@@ -53,7 +53,7 @@ class boarding extends controllers
 							<option value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
 						</select>
 
-						<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
+						<input type="file" name="photo" id="add_photo'.bin2hex($req[$i]["punto_id"]).'" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
 						<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
 					</div>
 				');
@@ -66,7 +66,7 @@ class boarding extends controllers
 							<option value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
 						</select>
 
-						<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
+						<input type="file" name="photo" id="add_photo'.bin2hex($req[$i]["punto_id"]).'" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
 						<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
 					</div>
 				');
@@ -79,7 +79,7 @@ class boarding extends controllers
 							<option selected value="2" lt="'.bin2hex($req[$i]["punto_id"]).'">No aplica</option>
 						</select>
 
-						<input type="file" name="photo" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
+						<input type="file" name="photo" id="add_photo'.bin2hex($req[$i]["punto_id"]).'" class="add_photo d-none" binid="'.bin2hex($req[$i]["punto_id"]).'">
 						<label for="imagen-auditoria" class="form-control btn btn-primary d-none">Agregar una imagen</label>
 					</div>
 				');

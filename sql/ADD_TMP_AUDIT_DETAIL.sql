@@ -6,6 +6,7 @@ DELIMITER $$
 		DECLARE week INT;
 		DECLARE fails INT;
 		DECLARE passes INT;
+		DECLARE na INT;
 		DECLARE result DOUBLE;
 		DECLARE verification INT;
 
@@ -24,9 +25,10 @@ DELIMITER $$
 			END IF;
 
 			-- Setting counting
-			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 0 AND User_ID = user);
+			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 3 AND User_ID = user);
 			SET passes = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 1 AND User_ID = user);
-			SET result = (SELECT (passes / (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) ));
+			SET na = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 2 AND User_ID = user);
+			SET result = (SELECT (passes / ((SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) - na)));
 
 			-- Updating audit table
 			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
@@ -43,9 +45,10 @@ DELIMITER $$
 			VALUES(audit_id, pos, sup, user, point_id, state_a);
 
 			-- Setting counting
-			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 0 AND User_ID = user);
+			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 3 AND User_ID = user);
 			SET passes = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 1 AND User_ID = user);
-			SET result = (SELECT (passes / (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user)));
+			SET na = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 2 AND User_ID = user);
+			SET result = (SELECT (passes / ((SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) - na)));
 
 			-- Updating audit table
 			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;

@@ -158,10 +158,10 @@ export function point_action() {
 		let supervisor = $("#supervisor").val()
 		let position = $("#posicion").val()
 		let id = this.getAttribute('id')
-		let auditResult = $(".point_actions").val();
+		let auditResult = this.value;
 
-		if(auditResult == 0) {
-			document.querySelector(".add_photo").click()
+		if(auditResult == 3) {
+			document.querySelector("#add_photo" + id).click()
 		}
 
 		$.ajax({

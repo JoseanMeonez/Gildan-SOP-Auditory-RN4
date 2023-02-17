@@ -50,7 +50,7 @@ class boardingModel extends Connection
 
 	public function getTempAudit(int $user)
 	{
-		$sql = "SELECT au.Semana, au.Mes, au.Pasa, au.Falla, au.Resultado, COUNT(d.Punto_Auditado) as Auditados FROM auditorias_tmp au INNER JOIN detalle_auditoria_tmp d ON au.Id_Auditoria = d.Nro_auditoria WHERE au.User_ID = $user AND d.User_ID = $user";
+		$sql = "SELECT au.Semana, au.Mes, au.Pasa, au.Falla, au.Resultado, (COUNT(d.Punto_Auditado) - (SELECT COUNT(d.Punto_Auditado) FROM detalle_auditoria_tmp d WHERE d.Estado = 2)) as Auditados FROM auditorias_tmp au INNER JOIN detalle_auditoria_tmp d ON au.Id_Auditoria = d.Nro_auditoria WHERE au.User_ID = $user AND d.User_ID = $user";
 		
 		return $this->select_all($sql);
 	}
