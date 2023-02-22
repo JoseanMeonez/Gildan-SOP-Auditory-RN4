@@ -101,10 +101,12 @@ export function inputFile() {
 
 							if (data) {
 								if (data.status) {
-									previmg.innerHTML = `<img src="${urlObj}">`;
-									document.querySelector("#" + parentid + " .btnDeleteFile").setAttribute("imgname", name);
+									// previmg.innerHTML = `<img src="${urlObj}">`;
+									// document.querySelector("#" + parentid + " .btnDeleteFile").setAttribute("imgname", name);
+
 									// document.querySelector("#" + parentid + " .btnUploadFile").classList.add("d-none");
 									// document.querySelector("#" + parentid + " .btnDeleteFile").classList.remove("d-none");
+									$('#detalleAuditoria').DataTable().ajax.reload()
 								}
 								
 								// Filling toast
@@ -196,19 +198,26 @@ export function addImageComponent() {
 		let key = Date.now();
 		let newElement = document.createElement("div");
 		newElement.id = "div" + key;
+		// newElement.innerHTML = (`
+		// 	<div class="prevImage rounded shadow-sm">
+		// 		<img src="${server}/assets/images/loading.svg" style="width:40%;">
+		// 	</div>
+		// 	<input type="file" name="photo" id="img${key}" dataid="${id}" class="inputUploadFile btn">
+		// 	<label for="img${key}" class="btnUploadFile btn btn-sm btn-success shadow-sm">
+		// 		<i class="fas fa-upload"></i>
+		// 	</label>
+		// 	<button type="button" class="btnDeleteFile btn btn-sm btn-danger shadow-sm" onclick="deleteImage('#div${key}')">
+		// 		<i class="fas fa-trash-alt"></i>
+		// 	</button>
+		// `);
+
 		newElement.innerHTML = (`
-			<div class="prevImage rounded shadow-sm">
-				<img src="${server}/assets/images/loading.svg" style="width:40%;">
-			</div>
 			<input type="file" name="photo" id="img${key}" dataid="${id}" class="inputUploadFile btn">
-			<label for="img${key}" class="btnUploadFile btn btn-sm btn-success shadow-sm">
+			<label for="img${key}" class="btnUploadFile btn btn-sm btn-success shadow-sm d-none">
 				<i class="fas fa-upload"></i>
 			</label>
-			<button type="button" class="btnDeleteFile btn btn-sm btn-danger shadow-sm" onclick="deleteImage('#div${key}')">
-				<i class="fas fa-trash-alt"></i>
-			</button>
 		`);
-		document.querySelector("#img-comment").classList.add("d-none")
+		// document.querySelector("#img-comment").classList.add("d-none")
 		document.querySelector("#imagesContainer" + id).appendChild(newElement);
 		document.querySelector("#div" + key + " .btnUploadFile").click();
 		return inputFile();
