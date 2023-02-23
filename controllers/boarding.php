@@ -122,8 +122,9 @@ class boarding extends controllers
 
 		$req = $this->model->setTempImage($imgName, $_SESSION['userdata']['usr_id'], $point_id);
 
-		if ($req[1] == 1) {
+		if ($req['resultado'] == 1) {
 			uploadImage($_FILES['photo'], $imgName);
+
 			$res = array(
 				'status' => true,
 				'header' => '¡Proceso exitoso!',
@@ -131,7 +132,17 @@ class boarding extends controllers
 				'response' => 'La imagen se guardó correctamente en la base de datos.',
 				'color' => 1
 			);
-		} else if ($req[1] == 0) {
+		} else if ($req['resultado'] == 2) {
+			uploadImage($_FILES['photo'], $imgName);
+
+			$res = array(
+				'status' => true,
+				'header' => '¡Proceso exitoso!',
+				'subtitle' => 'Hace un momento.',
+				'response' => 'La imagen se actualizó correctamente en la base de datos.',
+				'color' => 1
+			);
+		} else if ($req['resultado'] == 0) {
 			$res = array(
 				'status' => false,
 				'header' => 'Atención',
