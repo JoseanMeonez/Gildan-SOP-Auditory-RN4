@@ -62,11 +62,7 @@ export function showAndHideTable() {
 
 // Adding the image container and sending to controller
 export function inputFile() {
-	// let inputUploadFile = document.querySelectorAll(".inputUploadFile");
-	// inputUploadFile.forEach(function (inputUploadFile) {
-	// 	inputUploadFile.addEventListener('change', function () {
 	$(document).on("change", ".inputUploadFile", function () {
-
 			// Variables
 			let parentid = this.parentNode.getAttribute("id");
 			let fileid = this.getAttribute("id");
@@ -79,7 +75,6 @@ export function inputFile() {
 			// Validation
 			if (uploadPhoto != '') {
 				let type = fileimg[0].type;
-				let name = fileimg[0].name;
 
 				// Extension validation
 				if (type != 'image/jpeg' && type != 'image/jpg' && type != 'image/png') {
@@ -103,11 +98,7 @@ export function inputFile() {
 
 							if (data) {
 								if (data.status) {
-									// previmg.innerHTML = `<img src="${urlObj}">`;
-									// document.querySelector("#" + parentid + " .btnDeleteFile").setAttribute("imgname", name);
-
-									// document.querySelector("#" + parentid + " .btnUploadFile").classList.add("d-none");
-									// document.querySelector("#" + parentid + " .btnDeleteFile").classList.remove("d-none");
+									// Reloading table
 									$('#detalleAuditoria').DataTable().ajax.reload()
 								}
 
@@ -120,16 +111,28 @@ export function inputFile() {
 								return toast.show()
 							}
 						}
-					});
+					})
 				}
 			}
-		});
-	// });
+		})
 }
 
 // Calling delete image function from controller
 export function deleteImage(elementid) {
+	$(document).on("change", ".btnDeleteFile", function () {
+		// Variables
+		let point_id = this.getAttribute("dataid")
+		$.ajax({
+			type: "post",
+			url: server + "/boarding/addImageAudit/" + point_id,
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function (r) {
 
+			}
+		})
+	})
 }
 
 export function point_action() {

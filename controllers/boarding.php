@@ -95,7 +95,7 @@ class boarding extends controllers
 						<label for="img'.bin2hex($req[$i]["punto_id"]).'" class="btnUploadFile btn btn-sm btn-success mt-2">
 							<i class="fas fa-upload"></i>
 						</label>
-						<button type="button" class="btnDeleteFile btn btn-sm btn-danger">
+						<button type="button" dataid="'.bin2hex($req[$i]["punto_id"]).'" class="btnDeleteFile btn btn-sm btn-danger">
 							<i class="fas fa-trash-alt"></i>
 						</button>
 					</div>
@@ -133,6 +133,7 @@ class boarding extends controllers
 				'color' => 1
 			);
 		} else if ($req['resultado'] == 2) {
+			deleteFile($req['imagen_anterior']);
 			uploadImage($_FILES['photo'], $imgName);
 
 			$res = array(
