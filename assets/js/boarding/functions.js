@@ -119,17 +119,30 @@ export function inputFile() {
 
 // Calling delete image function from controller
 export function deleteImage(elementid) {
-	$(document).on("change", ".btnDeleteFile", function () {
+	$(document).on("click", ".btnDeleteFile", function () {
 		// Variables
 		let point_id = this.getAttribute("dataid")
+
 		$.ajax({
 			type: "post",
-			url: server + "/boarding/addImageAudit/" + point_id,
-			data: formData,
+			url: server + "/boarding/deleteImageAudit/" + point_id,
 			contentType: false,
 			processData: false,
 			success: function (r) {
+				let data = JSON.parse(r)
 
+				if (data.status) {
+					// Reloading table
+					$('#detalleAuditoria').DataTable().ajax.reload()
+				}
+
+				// Filling toast
+				document.querySelector('.toast-title').textContent = data.header
+				document.querySelector('.toast-subtitle').textContent = data.subtitle
+				document.querySelector('.toast-body').textContent = data.response
+
+				formatToast(data.status, data.color)
+				return toast.show()
 			}
 		})
 	})

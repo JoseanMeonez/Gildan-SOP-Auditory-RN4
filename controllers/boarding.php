@@ -165,6 +165,35 @@ class boarding extends controllers
 		die;
 	}
 
+	public function deleteImageAudit(int $point_id)
+	{
+		$point_id = hex2bin($point_id);
+		$req = $this->model->deleteTempImage($point_id);
+
+		if ($req['image']) {
+			deleteFile($req['image']);
+
+			$res = array(
+				'status' => true,
+				'header' => '¡Proceso exitoso!',
+				'subtitle' => 'Hace un momento.',
+				'response' => 'La imagen se borró correctamente en la base de datos.',
+				'color' => 1
+			);
+		} else {
+			$res = array(
+				'status' => false,
+				'header' => '¡Proceso Fallido!',
+				'subtitle' => 'Hace un momento.',
+				'response' => 'La imagen no se pudo borrar en la base de datos.',
+				'color' => 2
+			);
+		}
+
+		echo json_encode($res, JSON_UNESCAPED_UNICODE);
+		die;
+	}
+
 
 	public function setTempAudit()
 	{

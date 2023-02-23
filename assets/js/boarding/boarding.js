@@ -16,6 +16,7 @@ window.addEventListener('load', () => {
 	fn.addImageComponent()
 	fn.point_action()
 	fn.inputFile()
+	fn.deleteImage()
 	fn.save_audit()
 	fn.clear_audit()
 })

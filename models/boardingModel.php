@@ -62,4 +62,12 @@ class boardingModel extends Connection
 
 		return $response;
 	}
+
+	public function deleteTempImage(int $point)
+	{
+		$sql = "CALL DELETE_TMP_IMG($point)";
+		$response = $this->select($sql);
+
+		return $response;
+	}
 }
