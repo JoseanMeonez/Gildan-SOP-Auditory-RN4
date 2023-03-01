@@ -19,5 +19,6 @@ window.addEventListener('load', () => {
 	fn.deleteImage()
 	fn.save_audit()
 	fn.clear_audit()
+	fn.save_comment()
 })
 

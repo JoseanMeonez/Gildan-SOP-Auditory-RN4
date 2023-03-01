@@ -30,6 +30,11 @@ class boarding extends controllers
 		// Adding the selection button to data
 		for ($i=0; $i < count($req); $i++) {
 			$req[$i]['acciones'] = ('<div class="m-1">');
+			$req[$i]['comment'] = ('
+				<div class="form-group form_info mb-1">
+					<textarea class="form-control form_textarea comment_input" dataid="'.bin2hex($req[$i]["punto_id"]).'" cols="30" rows="1" placeholder="Escriba un Comentario" style="resize:none; height: 100px;"></textarea>
+				</div>
+			');
 
 			if ($req[$i]['estado'] == null) {
 				$req[$i]['acciones'] .= ('

@@ -217,6 +217,30 @@ export function addImageComponent() {
 	})
 }
 
+export function save_comment() {
+	$(document).on("keyup", ".comment_input", function (e) {
+		let supervisor = $("#supervisor").val()
+		let position = $("#posicion").val()
+
+		setTimeout(() => {	
+			$.ajax({
+				type: "post",
+				url: server + "/boarding/",
+				data: {
+					pid: this.getAttribute("dataid"),
+					sup: supervisor,
+					pos: position,
+					com: this.value
+				},
+				success: (r) => {
+					let data = JSON.parse(r)
+					console.info(data);
+				}
+			})
+		}, 5000);
+	})
+}
+
 export function save_audit() {
 	$(document).on("click", "#guardarAuditoria", function () {
 		console.log(this)
