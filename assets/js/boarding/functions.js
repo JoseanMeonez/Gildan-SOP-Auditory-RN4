@@ -225,7 +225,7 @@ export function save_comment() {
 		setTimeout(() => {	
 			$.ajax({
 				type: "post",
-				url: server + "/boarding/",
+				url: server + "/boarding/setCommentTemp",
 				data: {
 					pid: this.getAttribute("dataid"),
 					sup: supervisor,

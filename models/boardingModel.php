@@ -30,7 +30,8 @@ class boardingModel extends Connection
 			p.No_Punto as punto,
 			p.Descripcion as punto_desc,
 			img.Image_name as img,
-			d.Estado as estado
+			d.Estado as estado,
+			d.Comentario as comentario
 			FROM puntos p
 			INNER JOIN posiciones po ON po.Posicion_ID = p.Posicion_ID
 			LEFT JOIN images_tmp img ON img.Point_ID = p.Punto_ID
@@ -46,6 +47,13 @@ class boardingModel extends Connection
 		$data = array(2, $position, $supervisor, $user, $month, $point, $result);
 
 		return $this->insert($sql, $data);
+	}
+
+	public function setTempComment(int $user, int $supervisor, int $point, int $position, int $result, int $month, string $comment)
+	{
+		$sql = "CALL ADD_TMP_COMMENT(2, $position, $supervisor, $user, $month, $point, $result, '$comment')";
+
+		return $this->select($sql);
 	}
 
 	public function getTempAudit(int $user)

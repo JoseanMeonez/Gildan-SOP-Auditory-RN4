@@ -32,7 +32,7 @@ class boarding extends controllers
 			$req[$i]['acciones'] = ('<div class="m-1">');
 			$req[$i]['comment'] = ('
 				<div class="form-group form_info mb-1">
-					<textarea class="form-control form_textarea comment_input" dataid="'.bin2hex($req[$i]["punto_id"]).'" cols="30" rows="1" placeholder="Escriba un Comentario" style="resize:none; height: 100px;"></textarea>
+					<textarea class="form-control form_textarea comment_input" dataid="'.bin2hex($req[$i]["punto_id"]).'" cols="30" rows="1" placeholder="Escriba un Comentario" style="resize:none; height: 100px;">'.$req[$i]["comentario"].'</textarea>
 				</div>
 			');
 
@@ -224,6 +224,52 @@ class boarding extends controllers
 			);
 
 		} else if($supervisor < 1) {
+			$res = array(
+				'status' => false,
+				'color' => 3,
+				'title' => 'Datos incompletos - Supervisor',
+				'subtitle' => 'Ahora',
+				'body' => 'No se seleccionó un supervisor del area auditada, favor intente de nuevo.'
+			);
+		} else {
+			$res = array(
+				'status' => false,
+				'color' => 2,
+				'title' => 'Ocurrió un error',
+				'subtitle' => 'Ahora',
+				'body' => 'No se recibieron datos correctos sobre la auditoria, por favor, refresque la página e intente de nuevo.'
+			);
+		}
+
+
+		echo json_encode($res, JSON_UNESCAPED_UNICODE);
+		die;
+	}
+
+	public function setCommentTemp()
+	{
+		session_start();
+		date_default_timezone_set('America/Tegucigalpa');
+
+		$usr = $_SESSION['userdata']['usr_id'];
+		$pid = hex2bin($_POST['pid']);
+		$sup = intval($_POST['sup']);
+		$pos = intval($_POST['pos']);
+		$com = cleanString($_POST['com']);
+		$month = date('m');
+
+		if (!empty($sup) and !empty($pid) and !empty($pos)) {
+			$req = $this->model->setTempComment($usr, $sup, $pid, $pos, 2, $month, $com);
+
+			$res = array(
+				'status' => true,
+				'color' => 1,
+				'title' => 'Datos guardados',
+				'subtitle' => 'Ahora',
+				'body' => 'Se guardó correctamente el comentario.'
+			);
+
+		} else if($sup < 1) {
 			$res = array(
 				'status' => false,
 				'color' => 3,
