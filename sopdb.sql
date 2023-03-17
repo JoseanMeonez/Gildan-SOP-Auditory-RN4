@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 23, 2023 at 11:42 PM
+-- Generation Time: Mar 17, 2023 at 03:59 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -60,11 +60,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_AUDIT_DETAIL` (`area` INT, 
 			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
 		ELSE
 			-- Creating tmp audit
-			INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
-			VALUES (sup, user, NOW(), week, month, area,0,0,0,1);
+			IF week > 0 THEN
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), week, month, area,0,0,0,1);
+			ELSE
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), 1, month, area,0,0,0,1);
+			END IF;
 
 			-- Updating audit id
-			SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user);
+			SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
 
 			-- Inserting details
 			INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
@@ -80,6 +85,52 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_AUDIT_DETAIL` (`area` INT, 
 			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
 		END IF;
 
+  END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_COMMENT` (`area` INT, `pos` INT, `sup` INT, `user` INT, `month` INT, `point_id` INT, `state_a` INT, `comment` VARCHAR(255))   BEGIN
+		DECLARE audit_id INT;
+		DECLARE verification INT;
+		DECLARE week INT;
+
+		-- Setting variables
+		SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
+		SET verification = (SELECT Detalle_id FROM detalle_auditoria_tmp d WHERE d.Punto_Auditado = point_id);
+		SET week = (SELECT Semana FROM auditorias WHERE Mes = month ORDER BY Id_Auditoria DESC LIMIT 1) + 1;
+
+		IF audit_id > 0 THEN
+			-- Updating or inserting the auditory detail
+			IF verification > 0 THEN
+				UPDATE detalle_auditoria_tmp d SET d.Estado = state_a, d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
+				SELECT 2;
+			ELSE
+				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
+				VALUES(audit_id, pos, sup, user, point_id, state_a);
+				SELECT 1;
+			END IF;
+		ELSE
+			-- Creating tmp audit
+			IF week > 0 THEN
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), week, month, area,0,0,0,1);
+			ELSE
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), 1, month, area,0,0,0,1);
+			END IF;
+
+			-- Updating audit id
+			SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
+
+			-- Updating or inserting the auditory detail
+			IF verification > 0 THEN
+				UPDATE detalle_auditoria_tmp d SET d.Estado = state_a, d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
+				SELECT 2;
+			ELSE
+				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Comentario,Estado)
+				VALUES(audit_id, pos, sup, user, point_id, comment, state_a);
+				SELECT 1;
+			END IF;
+
+		END IF;
   END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_IMAGE` (`img_name` VARCHAR(255), `user` INT, `area` INT, `point` INT)   BEGIN
@@ -183,13 +234,6 @@ CREATE TABLE `auditorias_tmp` (
   `Status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `auditorias_tmp`
---
-
-INSERT INTO `auditorias_tmp` (`Id_Auditoria`, `Supervisor_ID`, `User_ID`, `Fecha`, `Semana`, `Mes`, `Area_ID`, `Pasa`, `Falla`, `Resultado`, `Status`) VALUES
-(1, 1, 1, '2023-02-23 10:39:23', '3', '1', 2, 0, 1, 0, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -227,6 +271,7 @@ CREATE TABLE `detalle_auditoria_tmp` (
   `Supervisor` int(11) NOT NULL,
   `User_ID` int(11) NOT NULL,
   `Punto_Auditado` int(11) NOT NULL,
+  `Comentario` varchar(255) NOT NULL,
   `Estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -920,7 +965,7 @@ ALTER TABLE `auditorias`
 -- AUTO_INCREMENT for table `auditorias_tmp`
 --
 ALTER TABLE `auditorias_tmp`
-  MODIFY `Id_Auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id_Auditoria` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `detalle_auditoria`
@@ -938,7 +983,7 @@ ALTER TABLE `detalle_auditoria_tmp`
 -- AUTO_INCREMENT for table `images_tmp`
 --
 ALTER TABLE `images_tmp`
-  MODIFY `Image_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `Image_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `posiciones`

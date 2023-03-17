@@ -34,11 +34,16 @@ DELIMITER $$
 			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
 		ELSE
 			-- Creating tmp audit
-			INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
-			VALUES (sup, user, NOW(), week, month, area,0,0,0,1);
+			IF week > 0 THEN
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), week, month, area,0,0,0,1);
+			ELSE
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), 1, month, area,0,0,0,1);
+			END IF;
 
 			-- Updating audit id
-			SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user);
+			SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
 
 			-- Inserting details
 			INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
