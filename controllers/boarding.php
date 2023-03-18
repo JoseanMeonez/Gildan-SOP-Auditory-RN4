@@ -122,7 +122,7 @@ class boarding extends controllers
 	public function addImageAudit(int $point_id)
 	{
 		session_start();
-		$imgName = '_img' . md5(date('d-m-Y H:m:s')) . '.jpg';
+		$imgName = 'boarding' . md5(date('d-m-Y H:m:s')) . '.jpg';
 		$point_id = hex2bin($point_id);
 
 		$req = $this->model->setTempImage($imgName, $_SESSION['userdata']['usr_id'], $point_id);
@@ -299,6 +299,39 @@ class boarding extends controllers
 
 		$user = $_SESSION['userdata']['usr_id'];
 		$req = $this->model->getTempAudit($user);
+
+		echo json_encode($req, JSON_UNESCAPED_UNICODE);
+		die;
+	}
+
+	public function AuditCompleted() {
+		$req = $this->model->AuditCompleted();
+
+		if ($req == 1) {
+			$res = array(
+				'status' => true,
+				'color' => 1,
+				'title' => '¡Auditoria finalizada!',
+				'subtitle' => 'Ahora',
+				'body' => 'Los datos de la auditoria han sido guardados.'
+			);
+		} elseif ($req == 3) {
+			$res = array(
+				'status' => false,
+				'color' => 3,
+				'title' => 'Auditoria Incompleta',
+				'subtitle' => 'Ahora',
+				'body' => 'Los datos no se guardaron porque aún faltan puntos por auditar.'
+			);
+		} else {
+			$res = array(
+				'status' => false,
+				'color' => 2,
+				'title' => 'Ocurrió un error',
+				'subtitle' => 'Ahora',
+				'body' => 'Los datos no se guardaron, consulte para darle soporte.'
+			);
+		}
 
 		echo json_encode($req, JSON_UNESCAPED_UNICODE);
 		die;

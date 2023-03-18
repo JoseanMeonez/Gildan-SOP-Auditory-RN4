@@ -78,4 +78,12 @@ class boardingModel extends Connection
 
 		return $response;
 	}
+
+	public function AuditCompleted()
+	{
+		$sql = "CALL AUDIT_COMPLETED(2)";
+		$response = $this->select($sql);
+
+		return $response;
+	}
 }
