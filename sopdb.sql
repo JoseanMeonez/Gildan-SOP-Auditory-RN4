@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2023 at 03:59 PM
+-- Generation Time: Mar 18, 2023 at 01:24 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `sopdb`
 --
-CREATE DATABASE IF NOT EXISTS `sopdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `sopdb`;
 
 DELIMITER $$
 --
@@ -196,6 +194,7 @@ INSERT INTO `area` (`Area_ID`, `Area_Nombre`) VALUES
 
 CREATE TABLE `auditorias` (
   `Id_Auditoria` int(11) NOT NULL,
+  `Supervisor_ID` int(11) NOT NULL,
   `User_ID` int(11) NOT NULL,
   `Fecha` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   `Semana` varchar(50) DEFAULT NULL,
@@ -211,8 +210,8 @@ CREATE TABLE `auditorias` (
 -- Dumping data for table `auditorias`
 --
 
-INSERT INTO `auditorias` (`Id_Auditoria`, `User_ID`, `Fecha`, `Semana`, `Mes`, `Area_ID`, `Pasa`, `Falla`, `Resultado`, `Status`) VALUES
-(1, 1, '2022-10-23 18:40:41', '2', '10', 1, 1, 0, 0.98, 1);
+INSERT INTO `auditorias` (`Id_Auditoria`, `Supervisor_ID`, `User_ID`, `Fecha`, `Semana`, `Mes`, `Area_ID`, `Pasa`, `Falla`, `Resultado`, `Status`) VALUES
+(1, 1, 1, '2023-03-17 18:08:09', '2', '10', 1, 1, 0, 0.98, 1);
 
 -- --------------------------------------------------------
 
@@ -247,16 +246,16 @@ CREATE TABLE `detalle_auditoria` (
   `Supervisor_ID` int(11) DEFAULT NULL,
   `Area_ID` int(11) DEFAULT NULL,
   `Punto_ID` int(11) DEFAULT NULL,
-  `Estado` int(11) DEFAULT NULL,
-  `Imagen` int(11) DEFAULT NULL
+  `Comentario` varchar(255) DEFAULT NULL,
+  `Estado` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `detalle_auditoria`
 --
 
-INSERT INTO `detalle_auditoria` (`Detalle_ID`, `Auditoria_ID`, `Posicion_ID`, `Supervisor_ID`, `Area_ID`, `Punto_ID`, `Estado`, `Imagen`) VALUES
-(1, 1, 1, 1, 2, 1, 1, 1);
+INSERT INTO `detalle_auditoria` (`Detalle_ID`, `Auditoria_ID`, `Posicion_ID`, `Supervisor_ID`, `Area_ID`, `Punto_ID`, `Comentario`, `Estado`) VALUES
+(1, 1, 1, 1, 2, 1, '1', 1);
 
 -- --------------------------------------------------------
 
@@ -273,6 +272,20 @@ CREATE TABLE `detalle_auditoria_tmp` (
   `Punto_Auditado` int(11) NOT NULL,
   `Comentario` varchar(255) NOT NULL,
   `Estado` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `images`
+--
+
+CREATE TABLE `images` (
+  `Image_ID` int(11) NOT NULL,
+  `Image_name` varchar(255) NOT NULL,
+  `Point_ID` int(11) NOT NULL,
+  `Audit_ID` int(11) NOT NULL,
+  `User_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -848,7 +861,8 @@ ALTER TABLE `auditorias`
   ADD PRIMARY KEY (`Id_Auditoria`),
   ADD KEY `Area_ID` (`Area_ID`),
   ADD KEY `Status` (`Status`),
-  ADD KEY `User_ID` (`User_ID`);
+  ADD KEY `User_ID` (`User_ID`),
+  ADD KEY `Supervisor_ID` (`Supervisor_ID`);
 
 --
 -- Indexes for table `auditorias_tmp`
@@ -882,6 +896,15 @@ ALTER TABLE `detalle_auditoria_tmp`
   ADD KEY `User_ID` (`User_ID`),
   ADD KEY `Posicion_id` (`Posicion_id`),
   ADD KEY `Punto_Auditado` (`Punto_Auditado`);
+
+--
+-- Indexes for table `images`
+--
+ALTER TABLE `images`
+  ADD PRIMARY KEY (`Image_ID`),
+  ADD KEY `Audit_ID` (`Audit_ID`),
+  ADD KEY `User_ID` (`User_ID`),
+  ADD KEY `Point_ID` (`Point_ID`);
 
 --
 -- Indexes for table `images_tmp`
@@ -980,6 +1003,12 @@ ALTER TABLE `detalle_auditoria_tmp`
   MODIFY `Detalle_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `images`
+--
+ALTER TABLE `images`
+  MODIFY `Image_ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `images_tmp`
 --
 ALTER TABLE `images_tmp`
@@ -1036,7 +1065,8 @@ ALTER TABLE `tblusers`
 --
 ALTER TABLE `auditorias`
   ADD CONSTRAINT `Area_ID` FOREIGN KEY (`Area_ID`) REFERENCES `area` (`Area_ID`),
-  ADD CONSTRAINT `auditorias_ibfk_1` FOREIGN KEY (`Status`) REFERENCES `statusinfo` (`st_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `auditorias_ibfk_1` FOREIGN KEY (`Status`) REFERENCES `statusinfo` (`st_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `auditorias_ibfk_2` FOREIGN KEY (`Supervisor_ID`) REFERENCES `supervisores` (`Supervisor_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Constraints for table `auditorias_tmp`
@@ -1066,6 +1096,14 @@ ALTER TABLE `detalle_auditoria_tmp`
   ADD CONSTRAINT `detalle_auditoria_tmp_ibfk_3` FOREIGN KEY (`Posicion_id`) REFERENCES `posiciones` (`Posicion_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `detalle_auditoria_tmp_ibfk_4` FOREIGN KEY (`Supervisor`) REFERENCES `supervisores` (`Supervisor_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `detalle_auditoria_tmp_ibfk_5` FOREIGN KEY (`Punto_Auditado`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Constraints for table `images`
+--
+ALTER TABLE `images`
+  ADD CONSTRAINT `images_ibfk_1` FOREIGN KEY (`Audit_ID`) REFERENCES `auditorias_tmp` (`Id_Auditoria`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `images_ibfk_2` FOREIGN KEY (`User_ID`) REFERENCES `tblusers` (`usr_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `images_ibfk_3` FOREIGN KEY (`Point_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Constraints for table `images_tmp`
