@@ -9,7 +9,9 @@ class boarding extends controllers
 	public function getAudits() {
 		$req = $this->model->getAudits();
 
-		for ($i=0; $i < count($req); $i++) { 
+		for ($i=0; $i < count($req); $i++) {
+			$req[$i]['row'] = $i+1;
+			$req[$i]['Resultado'] = 100*$req[$i]['Resultado']."%";
 			$req[$i]['editar'] = ('
 				<button class="btn btn-outline-success btn-sm" onclick="editButton()" title="Editar">
 					<i class="fa-solid fa-pen-to-square"></i>
@@ -305,9 +307,11 @@ class boarding extends controllers
 	}
 
 	public function AuditCompleted() {
-		$req = $this->model->AuditCompleted();
+		session_start();
+		$req = $this->model->AuditCompleted($_SESSION['userdata']['usr_id']);
 
-		if ($req == 1) {
+		// dep($req);die;
+		if (isset($req[1]) and $req[1] == 1) {
 			$res = array(
 				'status' => true,
 				'color' => 1,
@@ -315,7 +319,15 @@ class boarding extends controllers
 				'subtitle' => 'Ahora',
 				'body' => 'Los datos de la auditoria han sido guardados.'
 			);
-		} elseif ($req == 3) {
+		} elseif (isset($req[2]) and $req[2] == 2) {
+			$res = array(
+				'status' => false,
+				'color' => 3,
+				'title' => '¡Atención!',
+				'subtitle' => 'Ahora',
+				'body' => 'Los datos no se guardaron porque usted tiene más puntos auditados de los que esta area tiene asignados.'
+			);
+		} elseif (isset($req[3]) and $req[3] == 3) {
 			$res = array(
 				'status' => false,
 				'color' => 3,
@@ -329,11 +341,11 @@ class boarding extends controllers
 				'color' => 2,
 				'title' => 'Ocurrió un error',
 				'subtitle' => 'Ahora',
-				'body' => 'Los datos no se guardaron, consulte para darle soporte.'
+				'body' => 'Los datos no se guardaron, consulte a un desarrollador para darle soporte.'
 			);
 		}
 
-		echo json_encode($req, JSON_UNESCAPED_UNICODE);
+		echo json_encode($res, JSON_UNESCAPED_UNICODE);
 		die;
 	}
 }

@@ -25,7 +25,7 @@ export const datatable = () => $('#tblBoarding').DataTable({
 	columns: [
 		{
 			type: 'html-num',
-			data: 'Id_Auditoria'
+			data: 'row'
 		},
 		{ data: 'Fecha' },
 		{ data: 'Semana' },

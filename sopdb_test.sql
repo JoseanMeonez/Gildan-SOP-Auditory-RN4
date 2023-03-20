@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-10-2022 a las 05:33:59
+-- Tiempo de generación: 20-03-2023 a las 07:14:08
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.9
 
@@ -32,57 +32,180 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_AUDIT_DETAIL` (`area` INT, 
 		DECLARE week INT;
 		DECLARE fails INT;
 		DECLARE passes INT;
+		DECLARE na INT;
+		DECLARE result DOUBLE;
+		DECLARE verification INT;
 
 		-- Setting variables
-		SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user);
-		SET week = (SELECT Semana FROM auditorias WHERE User_ID = user ORDER BY Id_Auditoria DESC LIMIT 1) + 1;
-
+		SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
+		SET week = (SELECT Semana FROM auditorias WHERE Mes = month ORDER BY Id_Auditoria DESC LIMIT 1) + 1;
+		SET verification = (SELECT Detalle_id FROM detalle_auditoria_tmp d WHERE d.Punto_Auditado = point_id);
 
 		IF audit_id > 0 THEN
 			-- Inserting details
-			INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
-			VALUES(audit_id, pos, sup, user, point_id, state_a);
+			IF verification > 0 THEN
+				UPDATE detalle_auditoria_tmp d SET d.Estado = state_a WHERE d.Punto_Auditado = point_id;
+			ELSE
+				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
+				VALUES(audit_id, pos, sup, user, point_id, state_a);
+			END IF;
 
 			-- Setting counting
-			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 0 AND User_ID = user);
+			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 3 AND User_ID = user);
 			SET passes = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 1 AND User_ID = user);
-			
+			SET na = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 2 AND User_ID = user);
+			SET result = (SELECT (passes / ((SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) - na)));
+
 			-- Updating audit table
-			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails;
+			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
 		ELSE
 			-- Creating tmp audit
-			INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
-			VALUES (sup, user, NOW(), week, month, area,0,0,0,1);
+			IF week > 0 THEN
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), week, month, area,0,0,0,1);
+			ELSE
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), 1, month, area,0,0,0,1);
+			END IF;
 
 			-- Updating audit id
-			SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user);
+			SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
 
 			-- Inserting details
 			INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
 			VALUES(audit_id, pos, sup, user, point_id, state_a);
 
 			-- Setting counting
-			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 0 AND User_ID = user);
+			SET fails = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 3 AND User_ID = user);
 			SET passes = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 1 AND User_ID = user);
+			SET na = (SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE Estado = 2 AND User_ID = user);
+			SET result = (SELECT (passes / ((SELECT COUNT(Estado) FROM detalle_auditoria_tmp WHERE  User_ID = user) - na)));
 
 			-- Updating audit table
-			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails;
+			UPDATE auditorias_tmp a SET a.Pasa = passes, a.Falla = fails, a.Resultado = result WHERE a.User_ID = User_ID AND a.Area_ID = area;
 		END IF;
 
   END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_IMAGE` (`image_name` VARCHAR(255), `user` INT, `area` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_COMMENT` (`area` INT, `pos` INT, `sup` INT, `user` INT, `month` INT, `point_id` INT, `state_a` INT, `comment` VARCHAR(255))  BEGIN
 		DECLARE audit_id INT;
+		DECLARE verification INT;
+		DECLARE week INT;
 
+		-- Setting variables
 		SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
+		SET verification = (SELECT Detalle_id FROM detalle_auditoria_tmp d WHERE d.Punto_Auditado = point_id);
+		SET week = (SELECT Semana FROM auditorias WHERE Mes = month ORDER BY Id_Auditoria DESC LIMIT 1) + 1;
 
 		IF audit_id > 0 THEN
-			INSERT INTO images_tmp(Image_name, Audit_ID, User_ID) VALUES(image_name, audit_id, user);
-			SELECT 1;
+			-- Updating or inserting the auditory detail
+			IF verification > 0 THEN
+				UPDATE detalle_auditoria_tmp d SET d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
+				SELECT 2;
+			ELSE
+				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
+				VALUES(audit_id, pos, sup, user, point_id, state_a);
+				SELECT 1;
+			END IF;
 		ELSE
-			SELECT 0;
+			-- Creating tmp audit
+			IF week > 0 THEN
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), week, month, area,0,0,0,1);
+			ELSE
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, NOW(), 1, month, area,0,0,0,1);
+			END IF;
+
+			-- Updating audit id
+			SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
+
+			-- Updating or inserting the auditory detail
+			IF verification > 0 THEN
+				UPDATE detalle_auditoria_tmp d SET d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
+				SELECT 2;
+			ELSE
+				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Comentario,Estado)
+				VALUES(audit_id, pos, sup, user, point_id, comment, state_a);
+				SELECT 1;
+			END IF;
+
+		END IF;
+  END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_IMAGE` (`img_name` VARCHAR(255), `user` INT, `area` INT, `point` INT)  BEGIN
+		DECLARE audit_id INT;
+		DECLARE img_id INT;
+		DECLARE prev_name VARCHAR(255);
+
+		SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
+		SET img_id = (SELECT Image_ID FROM images_tmp WHERE Point_ID = point);
+
+		IF audit_id > 0 THEN
+			IF img_id > 0 THEN
+				SET prev_name = (SELECT Image_name FROM images_tmp WHERE Point_ID = point);
+				UPDATE images_tmp SET Image_name = img_name WHERE Point_ID = point;
+				SELECT 2 as resultado, prev_name as imagen_anterior;
+			ELSE
+				INSERT INTO images_tmp(Image_name, Point_ID, Audit_ID, User_ID) VALUES(img_name, point, audit_id, user);
+				SELECT 1 as resultado;
+			END IF;
+		ELSE
+			SELECT 0 as resultado;
 		END IF;
 
+  END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AUDIT_COMPLETED` (`area` INT, `id_user` INT)  BEGIN
+		DECLARE registers INT;
+		DECLARE area_points INT;
+		DECLARE new_audit_id INT;
+
+		-- Counting area's audit points
+		SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
+
+    -- Checking if exists a detail list from the actual user
+    SET registers = (SELECT COUNT(*) FROM detalle_auditoria_tmp WHERE User_ID = id_user);
+
+    -- Inserting audit detail if is there registers in the temp_detail table
+    IF registers = area_points THEN
+			-- Inserting the new audit
+			INSERT INTO auditorias(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+			SELECT t.Supervisor_ID, t.User_ID, t.Fecha, t.Semana, t.Mes, t.Area_ID, t.Pasa, t.Falla, t.Resultado, t.Status
+			FROM auditorias_tmp t;
+
+			-- Setting last audit id on variable
+			SET new_audit_id = (SELECT Id_Auditoria FROM auditorias WHERE User_ID = id_user ORDER by Id_Auditoria DESC LIMIT 1);
+
+			-- Inserting the audit details from the tmp table
+			INSERT INTO detalle_auditoria(Auditoria_ID, Posicion_ID, Supervisor_ID, User_ID, Punto_ID, Comentario, Estado)
+			SELECT new_audit_id, t.Posicion_id, t.Supervisor, t.User_ID, t.Punto_Auditado, t.Comentario, t.Estado
+			FROM detalle_auditoria_tmp t;
+
+			DELETE FROM detalle_auditoria_tmp WHERE User_ID = id_user;
+			DELETE FROM auditorias_tmp WHERE User_ID = id_user;
+
+      SELECT 1;
+    ELSE
+			IF registers > area_points THEN
+				SELECT 2;
+			ELSE
+  	    SELECT 3;
+	    END IF;
+    END IF;
+
+		-- 1 => Audit completed
+		-- 2 => There are more points registered by the user than the amount corresponding to the area
+		-- 3 => Uncomplete audit
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DELETE_TMP_IMG` (`point` INT)  BEGIN
+		DECLARE img VARCHAR(255);
+
+		SET img = (SELECT Image_name FROM images_tmp WHERE Point_ID = point);
+		DELETE FROM images_tmp WHERE Point_ID = point;
+		
+		SELECT img as image;
   END$$
 
 DELIMITER ;
@@ -116,6 +239,7 @@ INSERT INTO `area` (`Area_ID`, `Area_Nombre`) VALUES
 
 CREATE TABLE `auditorias` (
   `Id_Auditoria` int(11) NOT NULL,
+  `Supervisor_ID` int(11) NOT NULL,
   `User_ID` int(11) NOT NULL,
   `Fecha` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   `Semana` varchar(50) DEFAULT NULL,
@@ -126,13 +250,6 @@ CREATE TABLE `auditorias` (
   `Resultado` double DEFAULT NULL,
   `Status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `auditorias`
---
-
-INSERT INTO `auditorias` (`Id_Auditoria`, `User_ID`, `Fecha`, `Semana`, `Mes`, `Area_ID`, `Pasa`, `Falla`, `Resultado`, `Status`) VALUES
-(1, 1, '2022-10-23 18:40:41', '2', '10', 1, 1, 0, 0.98, 1);
 
 -- --------------------------------------------------------
 
@@ -165,18 +282,11 @@ CREATE TABLE `detalle_auditoria` (
   `Auditoria_ID` int(11) NOT NULL,
   `Posicion_ID` int(11) DEFAULT NULL,
   `Supervisor_ID` int(11) DEFAULT NULL,
-  `Area_ID` int(11) DEFAULT NULL,
+  `User_ID` int(11) DEFAULT NULL,
   `Punto_ID` int(11) DEFAULT NULL,
-  `Estado` int(11) DEFAULT NULL,
-  `Imagen` int(11) DEFAULT NULL
+  `Comentario` varchar(255) DEFAULT NULL,
+  `Estado` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `detalle_auditoria`
---
-
-INSERT INTO `detalle_auditoria` (`Detalle_ID`, `Auditoria_ID`, `Posicion_ID`, `Supervisor_ID`, `Area_ID`, `Punto_ID`, `Estado`, `Imagen`) VALUES
-(1, 1, 1, 1, 2, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -191,7 +301,22 @@ CREATE TABLE `detalle_auditoria_tmp` (
   `Supervisor` int(11) NOT NULL,
   `User_ID` int(11) NOT NULL,
   `Punto_Auditado` int(11) NOT NULL,
+  `Comentario` varchar(255) NOT NULL,
   `Estado` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `images`
+--
+
+CREATE TABLE `images` (
+  `Image_ID` int(11) NOT NULL,
+  `Image_name` varchar(255) NOT NULL,
+  `Point_ID` int(11) NOT NULL,
+  `Audit_ID` int(11) NOT NULL,
+  `User_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -203,6 +328,7 @@ CREATE TABLE `detalle_auditoria_tmp` (
 CREATE TABLE `images_tmp` (
   `Image_ID` int(11) NOT NULL,
   `Image_name` varchar(255) NOT NULL,
+  `Point_ID` int(11) NOT NULL,
   `Audit_ID` int(11) NOT NULL,
   `User_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -682,7 +808,7 @@ CREATE TABLE `supervisores` (
 
 INSERT INTO `supervisores` (`Supervisor_ID`, `Area_ID`, `Nombre`, `Status`) VALUES
 (1, 2, 'Ivonne Espinal', 1),
-(2, 2, 'Javier Cabrera', 1);
+(2, 2, 'Javier Medina', 1);
 
 -- --------------------------------------------------------
 
@@ -766,7 +892,8 @@ ALTER TABLE `auditorias`
   ADD PRIMARY KEY (`Id_Auditoria`),
   ADD KEY `Area_ID` (`Area_ID`),
   ADD KEY `Status` (`Status`),
-  ADD KEY `User_ID` (`User_ID`);
+  ADD KEY `User_ID` (`User_ID`),
+  ADD KEY `Supervisor_ID` (`Supervisor_ID`);
 
 --
 -- Indices de la tabla `auditorias_tmp`
@@ -787,8 +914,8 @@ ALTER TABLE `detalle_auditoria`
   ADD KEY `Posicion_ID` (`Posicion_ID`),
   ADD KEY `Supervisor_ID` (`Supervisor_ID`),
   ADD KEY `Punto_Auditado` (`Punto_ID`),
-  ADD KEY `Area_Auditada` (`Area_ID`),
-  ADD KEY `Area_ID` (`Area_ID`);
+  ADD KEY `Area_Auditada` (`User_ID`),
+  ADD KEY `Area_ID` (`User_ID`);
 
 --
 -- Indices de la tabla `detalle_auditoria_tmp`
@@ -802,12 +929,22 @@ ALTER TABLE `detalle_auditoria_tmp`
   ADD KEY `Punto_Auditado` (`Punto_Auditado`);
 
 --
+-- Indices de la tabla `images`
+--
+ALTER TABLE `images`
+  ADD PRIMARY KEY (`Image_ID`),
+  ADD KEY `Audit_ID` (`Audit_ID`),
+  ADD KEY `User_ID` (`User_ID`),
+  ADD KEY `Point_ID` (`Point_ID`);
+
+--
 -- Indices de la tabla `images_tmp`
 --
 ALTER TABLE `images_tmp`
   ADD PRIMARY KEY (`Image_ID`),
   ADD KEY `Audit_ID` (`Audit_ID`),
-  ADD KEY `User_ID` (`User_ID`);
+  ADD KEY `User_ID` (`User_ID`),
+  ADD KEY `Point_ID` (`Point_ID`);
 
 --
 -- Indices de la tabla `posiciones`
@@ -876,7 +1013,7 @@ ALTER TABLE `area`
 -- AUTO_INCREMENT de la tabla `auditorias`
 --
 ALTER TABLE `auditorias`
-  MODIFY `Id_Auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id_Auditoria` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `auditorias_tmp`
@@ -888,13 +1025,19 @@ ALTER TABLE `auditorias_tmp`
 -- AUTO_INCREMENT de la tabla `detalle_auditoria`
 --
 ALTER TABLE `detalle_auditoria`
-  MODIFY `Detalle_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Detalle_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_auditoria_tmp`
 --
 ALTER TABLE `detalle_auditoria_tmp`
   MODIFY `Detalle_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `images`
+--
+ALTER TABLE `images`
+  MODIFY `Image_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `images_tmp`
@@ -953,7 +1096,8 @@ ALTER TABLE `tblusers`
 --
 ALTER TABLE `auditorias`
   ADD CONSTRAINT `Area_ID` FOREIGN KEY (`Area_ID`) REFERENCES `area` (`Area_ID`),
-  ADD CONSTRAINT `auditorias_ibfk_1` FOREIGN KEY (`Status`) REFERENCES `statusinfo` (`st_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `auditorias_ibfk_1` FOREIGN KEY (`Status`) REFERENCES `statusinfo` (`st_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `auditorias_ibfk_2` FOREIGN KEY (`Supervisor_ID`) REFERENCES `supervisores` (`Supervisor_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `auditorias_tmp`
@@ -971,8 +1115,8 @@ ALTER TABLE `detalle_auditoria`
   ADD CONSTRAINT `Nro_Auditoria` FOREIGN KEY (`Auditoria_ID`) REFERENCES `auditorias` (`Id_Auditoria`),
   ADD CONSTRAINT `detalle_auditoria_ibfk_1` FOREIGN KEY (`Posicion_ID`) REFERENCES `posiciones` (`Posicion_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `detalle_auditoria_ibfk_2` FOREIGN KEY (`Supervisor_ID`) REFERENCES `supervisores` (`Supervisor_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `detalle_auditoria_ibfk_3` FOREIGN KEY (`Area_ID`) REFERENCES `area` (`Area_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `detalle_auditoria_ibfk_4` FOREIGN KEY (`Punto_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `detalle_auditoria_ibfk_4` FOREIGN KEY (`Punto_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `detalle_auditoria_ibfk_5` FOREIGN KEY (`User_ID`) REFERENCES `tblusers` (`usr_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `detalle_auditoria_tmp`
@@ -985,11 +1129,20 @@ ALTER TABLE `detalle_auditoria_tmp`
   ADD CONSTRAINT `detalle_auditoria_tmp_ibfk_5` FOREIGN KEY (`Punto_Auditado`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `images`
+--
+ALTER TABLE `images`
+  ADD CONSTRAINT `images_ibfk_1` FOREIGN KEY (`Audit_ID`) REFERENCES `auditorias_tmp` (`Id_Auditoria`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `images_ibfk_2` FOREIGN KEY (`User_ID`) REFERENCES `tblusers` (`usr_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `images_ibfk_3` FOREIGN KEY (`Point_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `images_tmp`
 --
 ALTER TABLE `images_tmp`
   ADD CONSTRAINT `images_tmp_ibfk_1` FOREIGN KEY (`Audit_ID`) REFERENCES `auditorias_tmp` (`Id_Auditoria`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `images_tmp_ibfk_2` FOREIGN KEY (`User_ID`) REFERENCES `tblusers` (`usr_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `images_tmp_ibfk_2` FOREIGN KEY (`User_ID`) REFERENCES `tblusers` (`usr_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `images_tmp_ibfk_3` FOREIGN KEY (`Point_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `posiciones`

@@ -243,7 +243,25 @@ export function save_comment() {
 
 export function save_audit() {
 	$(document).on("click", "#guardarAuditoria", function () {
-		console.log(this)
+		$.ajax({
+			type: "post",
+			url: server + "/boarding/AuditCompleted",
+			success: (r) => {
+				let data = JSON.parse(r)
+
+				$('.toast-title').text(data.title)
+				$('.toast-subtitle').text(data.subtitle)
+				$('.toast-body').text(data.body)
+				formatToast(data.status, data.color)
+				if (data.status == 1) {
+					$('#tblBoarding').DataTable().ajax.reload()
+					$('#detalleAuditoria').DataTable().ajax.reload()
+					$('#addAuditBoarding').modal('hide')
+				}
+				
+				return toast.show()
+			}
+		})
 	})
 }
 

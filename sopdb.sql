@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 18, 2023 at 01:24 AM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 20-03-2023 a las 07:14:08
+-- Versión del servidor: 10.4.20-MariaDB
+-- Versión de PHP: 8.0.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,14 +18,16 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `sopdb`
+-- Base de datos: `sopdb`
 --
+CREATE DATABASE IF NOT EXISTS `sopdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `sopdb`;
 
 DELIMITER $$
 --
--- Procedures
+-- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_AUDIT_DETAIL` (`area` INT, `pos` INT, `sup` INT, `user` INT, `month` INT, `point_id` INT, `state_a` INT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_AUDIT_DETAIL` (`area` INT, `pos` INT, `sup` INT, `user` INT, `month` INT, `point_id` INT, `state_a` INT)  BEGIN
 		DECLARE audit_id INT;
 		DECLARE week INT;
 		DECLARE fails INT;
@@ -85,7 +87,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_AUDIT_DETAIL` (`area` INT, 
 
   END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_COMMENT` (`area` INT, `pos` INT, `sup` INT, `user` INT, `month` INT, `point_id` INT, `state_a` INT, `comment` VARCHAR(255))   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_COMMENT` (`area` INT, `pos` INT, `sup` INT, `user` INT, `month` INT, `point_id` INT, `state_a` INT, `comment` VARCHAR(255))  BEGIN
 		DECLARE audit_id INT;
 		DECLARE verification INT;
 		DECLARE week INT;
@@ -98,7 +100,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_COMMENT` (`area` INT, `pos`
 		IF audit_id > 0 THEN
 			-- Updating or inserting the auditory detail
 			IF verification > 0 THEN
-				UPDATE detalle_auditoria_tmp d SET d.Estado = state_a, d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
+				UPDATE detalle_auditoria_tmp d SET d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
 				SELECT 2;
 			ELSE
 				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
@@ -120,7 +122,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_COMMENT` (`area` INT, `pos`
 
 			-- Updating or inserting the auditory detail
 			IF verification > 0 THEN
-				UPDATE detalle_auditoria_tmp d SET d.Estado = state_a, d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
+				UPDATE detalle_auditoria_tmp d SET d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
 				SELECT 2;
 			ELSE
 				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Comentario,Estado)
@@ -131,7 +133,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_COMMENT` (`area` INT, `pos`
 		END IF;
   END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_IMAGE` (`img_name` VARCHAR(255), `user` INT, `area` INT, `point` INT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_IMAGE` (`img_name` VARCHAR(255), `user` INT, `area` INT, `point` INT)  BEGIN
 		DECLARE audit_id INT;
 		DECLARE img_id INT;
 		DECLARE prev_name VARCHAR(255);
@@ -154,7 +156,50 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ADD_TMP_IMAGE` (`img_name` VARCHAR(
 
   END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `DELETE_TMP_IMG` (`point` INT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AUDIT_COMPLETED` (`area` INT, `id_user` INT)  BEGIN
+		DECLARE registers INT;
+		DECLARE area_points INT;
+		DECLARE new_audit_id INT;
+
+		-- Counting area's audit points
+		SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
+
+    -- Checking if exists a detail list from the actual user
+    SET registers = (SELECT COUNT(*) FROM detalle_auditoria_tmp WHERE User_ID = id_user);
+
+    -- Inserting audit detail if is there registers in the temp_detail table
+    IF registers = area_points THEN
+			-- Inserting the new audit
+			INSERT INTO auditorias(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+			SELECT t.Supervisor_ID, t.User_ID, t.Fecha, t.Semana, t.Mes, t.Area_ID, t.Pasa, t.Falla, t.Resultado, t.Status
+			FROM auditorias_tmp t;
+
+			-- Setting last audit id on variable
+			SET new_audit_id = (SELECT Id_Auditoria FROM auditorias WHERE User_ID = id_user ORDER by Id_Auditoria DESC LIMIT 1);
+
+			-- Inserting the audit details from the tmp table
+			INSERT INTO detalle_auditoria(Auditoria_ID, Posicion_ID, Supervisor_ID, User_ID, Punto_ID, Comentario, Estado)
+			SELECT new_audit_id, t.Posicion_id, t.Supervisor, t.User_ID, t.Punto_Auditado, t.Comentario, t.Estado
+			FROM detalle_auditoria_tmp t;
+
+			DELETE FROM detalle_auditoria_tmp WHERE User_ID = id_user;
+			DELETE FROM auditorias_tmp WHERE User_ID = id_user;
+
+      SELECT 1;
+    ELSE
+			IF registers > area_points THEN
+				SELECT 2;
+			ELSE
+  	    SELECT 3;
+	    END IF;
+    END IF;
+
+		-- 1 => Audit completed
+		-- 2 => There are more points registered by the user than the amount corresponding to the area
+		-- 3 => Uncomplete audit
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DELETE_TMP_IMG` (`point` INT)  BEGIN
 		DECLARE img VARCHAR(255);
 
 		SET img = (SELECT Image_name FROM images_tmp WHERE Point_ID = point);
@@ -168,16 +213,16 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `area`
+-- Estructura de tabla para la tabla `area`
 --
 
 CREATE TABLE `area` (
   `Area_ID` int(11) NOT NULL,
   `Area_Nombre` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `area`
+-- Volcado de datos para la tabla `area`
 --
 
 INSERT INTO `area` (`Area_ID`, `Area_Nombre`) VALUES
@@ -189,7 +234,7 @@ INSERT INTO `area` (`Area_ID`, `Area_Nombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `auditorias`
+-- Estructura de tabla para la tabla `auditorias`
 --
 
 CREATE TABLE `auditorias` (
@@ -204,19 +249,12 @@ CREATE TABLE `auditorias` (
   `Falla` int(11) DEFAULT NULL,
   `Resultado` double DEFAULT NULL,
   `Status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `auditorias`
---
-
-INSERT INTO `auditorias` (`Id_Auditoria`, `Supervisor_ID`, `User_ID`, `Fecha`, `Semana`, `Mes`, `Area_ID`, `Pasa`, `Falla`, `Resultado`, `Status`) VALUES
-(1, 1, 1, '2023-03-17 18:08:09', '2', '10', 1, 1, 0, 0.98, 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `auditorias_tmp`
+-- Estructura de tabla para la tabla `auditorias_tmp`
 --
 
 CREATE TABLE `auditorias_tmp` (
@@ -231,12 +269,12 @@ CREATE TABLE `auditorias_tmp` (
   `Falla` int(11) DEFAULT NULL,
   `Resultado` double DEFAULT NULL,
   `Status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `detalle_auditoria`
+-- Estructura de tabla para la tabla `detalle_auditoria`
 --
 
 CREATE TABLE `detalle_auditoria` (
@@ -244,23 +282,16 @@ CREATE TABLE `detalle_auditoria` (
   `Auditoria_ID` int(11) NOT NULL,
   `Posicion_ID` int(11) DEFAULT NULL,
   `Supervisor_ID` int(11) DEFAULT NULL,
-  `Area_ID` int(11) DEFAULT NULL,
+  `User_ID` int(11) DEFAULT NULL,
   `Punto_ID` int(11) DEFAULT NULL,
   `Comentario` varchar(255) DEFAULT NULL,
   `Estado` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `detalle_auditoria`
---
-
-INSERT INTO `detalle_auditoria` (`Detalle_ID`, `Auditoria_ID`, `Posicion_ID`, `Supervisor_ID`, `Area_ID`, `Punto_ID`, `Comentario`, `Estado`) VALUES
-(1, 1, 1, 1, 2, 1, '1', 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `detalle_auditoria_tmp`
+-- Estructura de tabla para la tabla `detalle_auditoria_tmp`
 --
 
 CREATE TABLE `detalle_auditoria_tmp` (
@@ -272,12 +303,12 @@ CREATE TABLE `detalle_auditoria_tmp` (
   `Punto_Auditado` int(11) NOT NULL,
   `Comentario` varchar(255) NOT NULL,
   `Estado` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `images`
+-- Estructura de tabla para la tabla `images`
 --
 
 CREATE TABLE `images` (
@@ -286,12 +317,12 @@ CREATE TABLE `images` (
   `Point_ID` int(11) NOT NULL,
   `Audit_ID` int(11) NOT NULL,
   `User_ID` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `images_tmp`
+-- Estructura de tabla para la tabla `images_tmp`
 --
 
 CREATE TABLE `images_tmp` (
@@ -300,12 +331,12 @@ CREATE TABLE `images_tmp` (
   `Point_ID` int(11) NOT NULL,
   `Audit_ID` int(11) NOT NULL,
   `User_ID` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `posiciones`
+-- Estructura de tabla para la tabla `posiciones`
 --
 
 CREATE TABLE `posiciones` (
@@ -313,10 +344,10 @@ CREATE TABLE `posiciones` (
   `Area_ID` int(11) NOT NULL,
   `Posicion_Desc` varchar(80) NOT NULL,
   `Status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `posiciones`
+-- Volcado de datos para la tabla `posiciones`
 --
 
 INSERT INTO `posiciones` (`Posicion_ID`, `Area_ID`, `Posicion_Desc`, `Status`) VALUES
@@ -364,7 +395,7 @@ INSERT INTO `posiciones` (`Posicion_ID`, `Area_ID`, `Posicion_Desc`, `Status`) V
 -- --------------------------------------------------------
 
 --
--- Table structure for table `puntos`
+-- Estructura de tabla para la tabla `puntos`
 --
 
 CREATE TABLE `puntos` (
@@ -374,10 +405,10 @@ CREATE TABLE `puntos` (
   `No_punto` int(11) NOT NULL,
   `Descripcion` text NOT NULL,
   `status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `puntos`
+-- Volcado de datos para la tabla `puntos`
 --
 
 INSERT INTO `puntos` (`Punto_ID`, `Area_ID`, `Posicion_ID`, `No_punto`, `Descripcion`, `status`) VALUES
@@ -740,17 +771,17 @@ INSERT INTO `puntos` (`Punto_ID`, `Area_ID`, `Posicion_ID`, `No_punto`, `Descrip
 -- --------------------------------------------------------
 
 --
--- Table structure for table `statusinfo`
+-- Estructura de tabla para la tabla `statusinfo`
 --
 
 CREATE TABLE `statusinfo` (
   `st_id` int(11) NOT NULL,
   `st_name` varchar(50) NOT NULL,
   `st_description` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `statusinfo`
+-- Volcado de datos para la tabla `statusinfo`
 --
 
 INSERT INTO `statusinfo` (`st_id`, `st_name`, `st_description`) VALUES
@@ -761,7 +792,7 @@ INSERT INTO `statusinfo` (`st_id`, `st_name`, `st_description`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `supervisores`
+-- Estructura de tabla para la tabla `supervisores`
 --
 
 CREATE TABLE `supervisores` (
@@ -769,10 +800,10 @@ CREATE TABLE `supervisores` (
   `Area_ID` int(11) NOT NULL,
   `Nombre` varchar(255) NOT NULL,
   `Status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `supervisores`
+-- Volcado de datos para la tabla `supervisores`
 --
 
 INSERT INTO `supervisores` (`Supervisor_ID`, `Area_ID`, `Nombre`, `Status`) VALUES
@@ -782,7 +813,7 @@ INSERT INTO `supervisores` (`Supervisor_ID`, `Area_ID`, `Nombre`, `Status`) VALU
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tblpermissions`
+-- Estructura de tabla para la tabla `tblpermissions`
 --
 
 CREATE TABLE `tblpermissions` (
@@ -793,12 +824,12 @@ CREATE TABLE `tblpermissions` (
   `per_w` int(11) NOT NULL,
   `per_u` int(11) NOT NULL,
   `per_d` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tblroles`
+-- Estructura de tabla para la tabla `tblroles`
 --
 
 CREATE TABLE `tblroles` (
@@ -808,10 +839,10 @@ CREATE TABLE `tblroles` (
   `rol_ucreated` int(11) NOT NULL,
   `rol_dcreated` datetime NOT NULL DEFAULT current_timestamp(),
   `rol_status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `tblroles`
+-- Volcado de datos para la tabla `tblroles`
 --
 
 INSERT INTO `tblroles` (`rol_id`, `rol_name`, `rol_description`, `rol_ucreated`, `rol_dcreated`, `rol_status`) VALUES
@@ -821,7 +852,7 @@ INSERT INTO `tblroles` (`rol_id`, `rol_name`, `rol_description`, `rol_ucreated`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tblusers`
+-- Estructura de tabla para la tabla `tblusers`
 --
 
 CREATE TABLE `tblusers` (
@@ -834,10 +865,10 @@ CREATE TABLE `tblusers` (
   `usr_ucreated` int(11) NOT NULL,
   `usr_dcreated` datetime NOT NULL DEFAULT current_timestamp(),
   `usr_status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `tblusers`
+-- Volcado de datos para la tabla `tblusers`
 --
 
 INSERT INTO `tblusers` (`usr_id`, `usr_cname`, `usr_role`, `usr_email`, `usr_uname`, `usr_upass`, `usr_ucreated`, `usr_dcreated`, `usr_status`) VALUES
@@ -845,17 +876,17 @@ INSERT INTO `tblusers` (`usr_id`, `usr_cname`, `usr_role`, `usr_email`, `usr_una
 (2, 'Obed Garcia', 1, 'ojgarcia@gildan.com', 'ojgarcia', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1, '2022-04-30 12:44:41', 1);
 
 --
--- Indexes for dumped tables
+-- Índices para tablas volcadas
 --
 
 --
--- Indexes for table `area`
+-- Indices de la tabla `area`
 --
 ALTER TABLE `area`
   ADD PRIMARY KEY (`Area_ID`);
 
 --
--- Indexes for table `auditorias`
+-- Indices de la tabla `auditorias`
 --
 ALTER TABLE `auditorias`
   ADD PRIMARY KEY (`Id_Auditoria`),
@@ -865,7 +896,7 @@ ALTER TABLE `auditorias`
   ADD KEY `Supervisor_ID` (`Supervisor_ID`);
 
 --
--- Indexes for table `auditorias_tmp`
+-- Indices de la tabla `auditorias_tmp`
 --
 ALTER TABLE `auditorias_tmp`
   ADD PRIMARY KEY (`Id_Auditoria`),
@@ -875,7 +906,7 @@ ALTER TABLE `auditorias_tmp`
   ADD KEY `User_ID` (`User_ID`);
 
 --
--- Indexes for table `detalle_auditoria`
+-- Indices de la tabla `detalle_auditoria`
 --
 ALTER TABLE `detalle_auditoria`
   ADD PRIMARY KEY (`Detalle_ID`),
@@ -883,11 +914,11 @@ ALTER TABLE `detalle_auditoria`
   ADD KEY `Posicion_ID` (`Posicion_ID`),
   ADD KEY `Supervisor_ID` (`Supervisor_ID`),
   ADD KEY `Punto_Auditado` (`Punto_ID`),
-  ADD KEY `Area_Auditada` (`Area_ID`),
-  ADD KEY `Area_ID` (`Area_ID`);
+  ADD KEY `Area_Auditada` (`User_ID`),
+  ADD KEY `Area_ID` (`User_ID`);
 
 --
--- Indexes for table `detalle_auditoria_tmp`
+-- Indices de la tabla `detalle_auditoria_tmp`
 --
 ALTER TABLE `detalle_auditoria_tmp`
   ADD PRIMARY KEY (`Detalle_id`),
@@ -898,7 +929,7 @@ ALTER TABLE `detalle_auditoria_tmp`
   ADD KEY `Punto_Auditado` (`Punto_Auditado`);
 
 --
--- Indexes for table `images`
+-- Indices de la tabla `images`
 --
 ALTER TABLE `images`
   ADD PRIMARY KEY (`Image_ID`),
@@ -907,7 +938,7 @@ ALTER TABLE `images`
   ADD KEY `Point_ID` (`Point_ID`);
 
 --
--- Indexes for table `images_tmp`
+-- Indices de la tabla `images_tmp`
 --
 ALTER TABLE `images_tmp`
   ADD PRIMARY KEY (`Image_ID`),
@@ -916,7 +947,7 @@ ALTER TABLE `images_tmp`
   ADD KEY `Point_ID` (`Point_ID`);
 
 --
--- Indexes for table `posiciones`
+-- Indices de la tabla `posiciones`
 --
 ALTER TABLE `posiciones`
   ADD PRIMARY KEY (`Posicion_ID`),
@@ -924,7 +955,7 @@ ALTER TABLE `posiciones`
   ADD KEY `Status` (`Status`);
 
 --
--- Indexes for table `puntos`
+-- Indices de la tabla `puntos`
 --
 ALTER TABLE `puntos`
   ADD PRIMARY KEY (`Punto_ID`),
@@ -932,13 +963,13 @@ ALTER TABLE `puntos`
   ADD KEY `Posicion_ID` (`Posicion_ID`);
 
 --
--- Indexes for table `statusinfo`
+-- Indices de la tabla `statusinfo`
 --
 ALTER TABLE `statusinfo`
   ADD PRIMARY KEY (`st_id`);
 
 --
--- Indexes for table `supervisores`
+-- Indices de la tabla `supervisores`
 --
 ALTER TABLE `supervisores`
   ADD PRIMARY KEY (`Supervisor_ID`),
@@ -946,14 +977,14 @@ ALTER TABLE `supervisores`
   ADD KEY `Status` (`Status`);
 
 --
--- Indexes for table `tblpermissions`
+-- Indices de la tabla `tblpermissions`
 --
 ALTER TABLE `tblpermissions`
   ADD PRIMARY KEY (`per_id`),
   ADD KEY `per_role` (`per_role`);
 
 --
--- Indexes for table `tblroles`
+-- Indices de la tabla `tblroles`
 --
 ALTER TABLE `tblroles`
   ADD PRIMARY KEY (`rol_id`),
@@ -961,7 +992,7 @@ ALTER TABLE `tblroles`
   ADD KEY `estados` (`rol_status`);
 
 --
--- Indexes for table `tblusers`
+-- Indices de la tabla `tblusers`
 --
 ALTER TABLE `tblusers`
   ADD PRIMARY KEY (`usr_id`),
@@ -969,99 +1000,99 @@ ALTER TABLE `tblusers`
   ADD KEY `usr_status` (`usr_status`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT for table `area`
+-- AUTO_INCREMENT de la tabla `area`
 --
 ALTER TABLE `area`
   MODIFY `Area_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `auditorias`
+-- AUTO_INCREMENT de la tabla `auditorias`
 --
 ALTER TABLE `auditorias`
-  MODIFY `Id_Auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id_Auditoria` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `auditorias_tmp`
+-- AUTO_INCREMENT de la tabla `auditorias_tmp`
 --
 ALTER TABLE `auditorias_tmp`
   MODIFY `Id_Auditoria` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `detalle_auditoria`
+-- AUTO_INCREMENT de la tabla `detalle_auditoria`
 --
 ALTER TABLE `detalle_auditoria`
-  MODIFY `Detalle_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Detalle_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `detalle_auditoria_tmp`
+-- AUTO_INCREMENT de la tabla `detalle_auditoria_tmp`
 --
 ALTER TABLE `detalle_auditoria_tmp`
   MODIFY `Detalle_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `images`
+-- AUTO_INCREMENT de la tabla `images`
 --
 ALTER TABLE `images`
   MODIFY `Image_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `images_tmp`
+-- AUTO_INCREMENT de la tabla `images_tmp`
 --
 ALTER TABLE `images_tmp`
   MODIFY `Image_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `posiciones`
+-- AUTO_INCREMENT de la tabla `posiciones`
 --
 ALTER TABLE `posiciones`
   MODIFY `Posicion_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
--- AUTO_INCREMENT for table `puntos`
+-- AUTO_INCREMENT de la tabla `puntos`
 --
 ALTER TABLE `puntos`
   MODIFY `Punto_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=356;
 
 --
--- AUTO_INCREMENT for table `statusinfo`
+-- AUTO_INCREMENT de la tabla `statusinfo`
 --
 ALTER TABLE `statusinfo`
   MODIFY `st_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `supervisores`
+-- AUTO_INCREMENT de la tabla `supervisores`
 --
 ALTER TABLE `supervisores`
   MODIFY `Supervisor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `tblpermissions`
+-- AUTO_INCREMENT de la tabla `tblpermissions`
 --
 ALTER TABLE `tblpermissions`
   MODIFY `per_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tblroles`
+-- AUTO_INCREMENT de la tabla `tblroles`
 --
 ALTER TABLE `tblroles`
   MODIFY `rol_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `tblusers`
+-- AUTO_INCREMENT de la tabla `tblusers`
 --
 ALTER TABLE `tblusers`
   MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- Constraints for dumped tables
+-- Restricciones para tablas volcadas
 --
 
 --
--- Constraints for table `auditorias`
+-- Filtros para la tabla `auditorias`
 --
 ALTER TABLE `auditorias`
   ADD CONSTRAINT `Area_ID` FOREIGN KEY (`Area_ID`) REFERENCES `area` (`Area_ID`),
@@ -1069,7 +1100,7 @@ ALTER TABLE `auditorias`
   ADD CONSTRAINT `auditorias_ibfk_2` FOREIGN KEY (`Supervisor_ID`) REFERENCES `supervisores` (`Supervisor_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `auditorias_tmp`
+-- Filtros para la tabla `auditorias_tmp`
 --
 ALTER TABLE `auditorias_tmp`
   ADD CONSTRAINT `auditorias_tmp_ibfk_1` FOREIGN KEY (`Area_ID`) REFERENCES `area` (`Area_ID`) ON UPDATE CASCADE,
@@ -1078,17 +1109,17 @@ ALTER TABLE `auditorias_tmp`
   ADD CONSTRAINT `auditorias_tmp_ibfk_4` FOREIGN KEY (`Status`) REFERENCES `statusinfo` (`st_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `detalle_auditoria`
+-- Filtros para la tabla `detalle_auditoria`
 --
 ALTER TABLE `detalle_auditoria`
   ADD CONSTRAINT `Nro_Auditoria` FOREIGN KEY (`Auditoria_ID`) REFERENCES `auditorias` (`Id_Auditoria`),
   ADD CONSTRAINT `detalle_auditoria_ibfk_1` FOREIGN KEY (`Posicion_ID`) REFERENCES `posiciones` (`Posicion_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `detalle_auditoria_ibfk_2` FOREIGN KEY (`Supervisor_ID`) REFERENCES `supervisores` (`Supervisor_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `detalle_auditoria_ibfk_3` FOREIGN KEY (`Area_ID`) REFERENCES `area` (`Area_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `detalle_auditoria_ibfk_4` FOREIGN KEY (`Punto_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `detalle_auditoria_ibfk_4` FOREIGN KEY (`Punto_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `detalle_auditoria_ibfk_5` FOREIGN KEY (`User_ID`) REFERENCES `tblusers` (`usr_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `detalle_auditoria_tmp`
+-- Filtros para la tabla `detalle_auditoria_tmp`
 --
 ALTER TABLE `detalle_auditoria_tmp`
   ADD CONSTRAINT `detalle_auditoria_tmp_ibfk_1` FOREIGN KEY (`Nro_auditoria`) REFERENCES `auditorias_tmp` (`Id_Auditoria`) ON UPDATE CASCADE,
@@ -1098,7 +1129,7 @@ ALTER TABLE `detalle_auditoria_tmp`
   ADD CONSTRAINT `detalle_auditoria_tmp_ibfk_5` FOREIGN KEY (`Punto_Auditado`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `images`
+-- Filtros para la tabla `images`
 --
 ALTER TABLE `images`
   ADD CONSTRAINT `images_ibfk_1` FOREIGN KEY (`Audit_ID`) REFERENCES `auditorias_tmp` (`Id_Auditoria`) ON DELETE NO ACTION ON UPDATE CASCADE,
@@ -1106,7 +1137,7 @@ ALTER TABLE `images`
   ADD CONSTRAINT `images_ibfk_3` FOREIGN KEY (`Point_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `images_tmp`
+-- Filtros para la tabla `images_tmp`
 --
 ALTER TABLE `images_tmp`
   ADD CONSTRAINT `images_tmp_ibfk_1` FOREIGN KEY (`Audit_ID`) REFERENCES `auditorias_tmp` (`Id_Auditoria`) ON DELETE NO ACTION ON UPDATE CASCADE,
@@ -1114,41 +1145,41 @@ ALTER TABLE `images_tmp`
   ADD CONSTRAINT `images_tmp_ibfk_3` FOREIGN KEY (`Point_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `posiciones`
+-- Filtros para la tabla `posiciones`
 --
 ALTER TABLE `posiciones`
   ADD CONSTRAINT `posiciones_ibfk_1` FOREIGN KEY (`Status`) REFERENCES `statusinfo` (`st_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `posiciones_ibfk_2` FOREIGN KEY (`Area_ID`) REFERENCES `area` (`Area_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `puntos`
+-- Filtros para la tabla `puntos`
 --
 ALTER TABLE `puntos`
   ADD CONSTRAINT `puntos_ibfk_1` FOREIGN KEY (`Area_ID`) REFERENCES `area` (`Area_ID`) ON UPDATE CASCADE,
   ADD CONSTRAINT `puntos_ibfk_2` FOREIGN KEY (`Posicion_ID`) REFERENCES `posiciones` (`Posicion_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `supervisores`
+-- Filtros para la tabla `supervisores`
 --
 ALTER TABLE `supervisores`
   ADD CONSTRAINT `supervisores_ibfk_1` FOREIGN KEY (`Status`) REFERENCES `statusinfo` (`st_id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `supervisores_ibfk_2` FOREIGN KEY (`Area_ID`) REFERENCES `area` (`Area_ID`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `tblpermissions`
+-- Filtros para la tabla `tblpermissions`
 --
 ALTER TABLE `tblpermissions`
   ADD CONSTRAINT `tblpermissions_ibfk_1` FOREIGN KEY (`per_role`) REFERENCES `tblroles` (`rol_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `tblroles`
+-- Filtros para la tabla `tblroles`
 --
 ALTER TABLE `tblroles`
   ADD CONSTRAINT `tblroles_ibfk_1` FOREIGN KEY (`rol_ucreated`) REFERENCES `tblusers` (`usr_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `tblroles_ibfk_2` FOREIGN KEY (`rol_status`) REFERENCES `statusinfo` (`st_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `tblusers`
+-- Filtros para la tabla `tblusers`
 --
 ALTER TABLE `tblusers`
   ADD CONSTRAINT `tblusers_ibfk_1` FOREIGN KEY (`usr_role`) REFERENCES `tblroles` (`rol_id`) ON DELETE NO ACTION ON UPDATE CASCADE,

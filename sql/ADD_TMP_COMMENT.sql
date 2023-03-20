@@ -14,7 +14,7 @@ DELIMITER $$
 		IF audit_id > 0 THEN
 			-- Updating or inserting the auditory detail
 			IF verification > 0 THEN
-				UPDATE detalle_auditoria_tmp d SET d.Estado = state_a, d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
+				UPDATE detalle_auditoria_tmp d SET d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
 				SELECT 2;
 			ELSE
 				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Estado)
@@ -36,7 +36,7 @@ DELIMITER $$
 
 			-- Updating or inserting the auditory detail
 			IF verification > 0 THEN
-				UPDATE detalle_auditoria_tmp d SET d.Estado = state_a, d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
+				UPDATE detalle_auditoria_tmp d SET d.Comentario = comment  WHERE d.Punto_Auditado = point_id;
 				SELECT 2;
 			ELSE
 				INSERT INTO detalle_auditoria_tmp(Nro_auditoria, Posicion_id, Supervisor, User_ID, Punto_Auditado, Comentario,Estado)

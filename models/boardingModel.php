@@ -17,7 +17,7 @@ class boardingModel extends Connection
 			a.Falla,
 			a.Resultado
 			FROM auditorias a INNER JOIN area b ON a.Area_ID = b.Area_ID
-		WHERE a.Status != 3";
+		WHERE a.Status != 3 and a.Area_ID = 2";
 		$req = $this->select_all($query);
 		return $req;
 	}
@@ -79,9 +79,9 @@ class boardingModel extends Connection
 		return $response;
 	}
 
-	public function AuditCompleted()
+	public function AuditCompleted(int $user)
 	{
-		$sql = "CALL AUDIT_COMPLETED(2)";
+		$sql = "CALL AUDIT_COMPLETED(2, $user)";
 		$response = $this->select($sql);
 
 		return $response;
