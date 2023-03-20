@@ -7,13 +7,13 @@ DELIMITER $$
 		DECLARE new_audit_id INT;
 
 		-- Counting area's audit points
-		SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
+		-- SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
 
     -- Checking if exists a detail list from the actual user
     SET registers = (SELECT COUNT(*) FROM detalle_auditoria_tmp WHERE User_ID = id_user);
 
     -- Inserting audit detail if is there registers in the temp_detail table
-    IF registers = area_points THEN
+    IF registers > 0 THEN
 			-- Inserting the new audit
 			INSERT INTO auditorias(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
 			SELECT t.Supervisor_ID, t.User_ID, t.Fecha, t.Semana, t.Mes, t.Area_ID, t.Pasa, t.Falla, t.Resultado, t.Status
@@ -27,6 +27,11 @@ DELIMITER $$
 			SELECT new_audit_id, t.Posicion_id, t.Supervisor, t.User_ID, t.Punto_Auditado, t.Comentario, t.Estado
 			FROM detalle_auditoria_tmp t;
 
+			INSERT INTO images(Image_name, Point_ID, Audit_ID, User_ID)
+			SELECT t.Image_name, t.Point_ID, new_audit_id, id_user
+			FROM images_tmp t;
+
+			DELETE FROM images_tmp WHERE User_ID = id_user;
 			DELETE FROM detalle_auditoria_tmp WHERE User_ID = id_user;
 			DELETE FROM auditorias_tmp WHERE User_ID = id_user;
 
