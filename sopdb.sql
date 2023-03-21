@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-03-2023 a las 07:14:08
+-- Tiempo de generación: 21-03-2023 a las 04:26:33
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.9
 
@@ -162,13 +162,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `AUDIT_COMPLETED` (`area` INT, `id_u
 		DECLARE new_audit_id INT;
 
 		-- Counting area's audit points
-		SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
+		-- SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
 
     -- Checking if exists a detail list from the actual user
     SET registers = (SELECT COUNT(*) FROM detalle_auditoria_tmp WHERE User_ID = id_user);
 
     -- Inserting audit detail if is there registers in the temp_detail table
-    IF registers = area_points THEN
+    IF registers > 0 THEN
 			-- Inserting the new audit
 			INSERT INTO auditorias(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
 			SELECT t.Supervisor_ID, t.User_ID, t.Fecha, t.Semana, t.Mes, t.Area_ID, t.Pasa, t.Falla, t.Resultado, t.Status
@@ -182,6 +182,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `AUDIT_COMPLETED` (`area` INT, `id_u
 			SELECT new_audit_id, t.Posicion_id, t.Supervisor, t.User_ID, t.Punto_Auditado, t.Comentario, t.Estado
 			FROM detalle_auditoria_tmp t;
 
+			INSERT INTO images(Image_name, Point_ID, Audit_ID, User_ID)
+			SELECT t.Image_name, t.Point_ID, new_audit_id, id_user
+			FROM images_tmp t;
+
+			DELETE FROM images_tmp WHERE User_ID = id_user;
 			DELETE FROM detalle_auditoria_tmp WHERE User_ID = id_user;
 			DELETE FROM auditorias_tmp WHERE User_ID = id_user;
 
@@ -1132,9 +1137,9 @@ ALTER TABLE `detalle_auditoria_tmp`
 -- Filtros para la tabla `images`
 --
 ALTER TABLE `images`
-  ADD CONSTRAINT `images_ibfk_1` FOREIGN KEY (`Audit_ID`) REFERENCES `auditorias_tmp` (`Id_Auditoria`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `images_ibfk_2` FOREIGN KEY (`User_ID`) REFERENCES `tblusers` (`usr_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `images_ibfk_3` FOREIGN KEY (`Point_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `images_ibfk_3` FOREIGN KEY (`Point_ID`) REFERENCES `puntos` (`Punto_ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `images_ibfk_4` FOREIGN KEY (`Audit_ID`) REFERENCES `auditorias` (`Id_Auditoria`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `images_tmp`
