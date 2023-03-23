@@ -4,6 +4,25 @@ import { setComboBox } from "../positions/functions.js";
 // Datatable's filters
 export const datatableFilter = () => $('#tblBoarding thead tr').clone(true).addClass('filters').appendTo('#tblBoarding thead')
 
+export function seeAuditModal() {
+	// Hidding the responsive data modal
+	$(".dtr-bs-modal").modal('hide')
+
+	$(document).on("click", ".seeAudit", function () {
+		$('#seeAuditBoarding').modal('show');
+		$(document).on("click", "#printChart", function () {
+			printChart()
+		})
+	})
+}
+
+function printChart() {
+	let headertag = document.querySelector("head")
+	let container = window.open('', '', 'height=600,width=800').document.write(headertag.innerHTML+document.getElementById("chart_div").innerHTML);
+	container.print()
+	container.close()
+}
+
 // Datatable properties
 export const datatable = () => $('#tblBoarding').DataTable({
 	language: { url: server + '/assets/json/spanish.json' },
@@ -199,11 +218,18 @@ export const current_audit = () => $('#current-audit-tab').click( function () {
 		url: server + '/boarding/getAuditTemp',
 		success: function (r) {
 			let data = JSON.parse(r)
+			// Creating Date format
+			const date = new Date(2023, data[0].Mes - 1);
+
+			// Obtaining the month name based on the previous format
+			const monthName = date.toLocaleString('es-ES', { month: 'long' });
+			const month = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
 			$("#failed-p").text(data[0].Falla)
 			$("#passed-p").text(data[0].Pasa)
 			$("#audited-p").text(data[0].Auditados)
 			$("#week-a").text(data[0].Semana)
-			$("#month-a").text(data[0].Mes)
+			$("#month-a").text(month)
 			$("#result-a").text(parseFloat(new Intl.NumberFormat('de-DE', { style: 'percent' }).format(data[0].Resultado)) + "%")
 
 		}

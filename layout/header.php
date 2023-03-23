@@ -47,6 +47,9 @@
 	<!-- Own Styles and fonts -->
 	<link rel="stylesheet" type="text/css" href="<?= media; ?>/css/style.css">
 	<link rel="stylesheet" type="text/css" href="<?= media; ?>/css/main.css">
+
+	<!-- Google Charts -->
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 
 <body class="app sidebar-mini">

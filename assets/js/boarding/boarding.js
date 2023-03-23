@@ -11,6 +11,7 @@ window.addEventListener('load', () => {
 	fn.showAndHideTable()
 	fn.ComboxesManager(config.detailTable)
 	config.current_audit()
+	config.seeAuditModal()
 	
 	// Create modal tables and content:
 	fn.addImageComponent()

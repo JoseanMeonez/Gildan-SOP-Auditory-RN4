@@ -14,7 +14,6 @@ google.charts.setOnLoadCallback(drawChart);
 
 
 function drawChart() {
-
 	var data = google.visualization.arrayToDataTable([
 		['Date', 'Boarding', 'Knitting', 'Dyeing', 'Fadis'],
 		['January',  0.98,      1.00,         0.97,   0.99],

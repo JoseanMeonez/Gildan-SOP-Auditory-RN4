@@ -13,8 +13,8 @@ class boarding extends controllers
 			$req[$i]['row'] = $i+1;
 			$req[$i]['Resultado'] = 100*$req[$i]['Resultado']."%";
 			$req[$i]['editar'] = ('
-				<button class="btn btn-outline-success btn-sm" onclick="editButton()" title="Editar">
-					<i class="fa-solid fa-pen-to-square"></i>
+				<button class="seeAudit btn btn-outline-success btn-sm" dataid="'.$req[$i]['Id_Auditoria'].'" title="Editar">
+					<i class="fa-solid fa-eye"></i>
 				</button>
 			');
 		}
@@ -333,7 +333,7 @@ class boarding extends controllers
 				'color' => 3,
 				'title' => 'Auditoria Incompleta',
 				'subtitle' => 'Ahora',
-				'body' => 'Los datos no se guardaron porque aún faltan puntos por auditar.'
+				'body' => 'Los datos no se guardaron porque no hay puntos auditados.'
 			);
 		} else {
 			$res = array(

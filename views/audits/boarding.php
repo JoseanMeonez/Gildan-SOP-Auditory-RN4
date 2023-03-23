@@ -59,6 +59,7 @@
 </main>
 
 <?=
+	getModal('verAuditoria', $data);
 	getModal('nuevaAuditoriaBoarding', $data);
 	component('footer', $data)
 ?>
