@@ -22,6 +22,23 @@ class boardingModel extends Connection
 		return $req;
 	}
 
+	public function getOneAudits()
+	{
+		$query = "SELECT
+			a.Id_Auditoria,
+			a.Fecha,
+			a.Semana,
+			a.Mes,
+			b.Area_Nombre,
+			a.Pasa,
+			a.Falla,
+			a.Resultado
+			FROM auditorias a INNER JOIN area b ON a.Area_ID = b.Area_ID
+		WHERE a.Status != 3 and a.Area_ID = 2";
+		$req = $this->select_all($query);
+		return $req;
+	}
+
 	public function getAuditDetailTemp(int $id, int $area)
 	{
 		$sql = ("SELECT 

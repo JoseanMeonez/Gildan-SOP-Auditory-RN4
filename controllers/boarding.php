@@ -23,6 +23,18 @@ class boarding extends controllers
 		die;
 	}
 
+	public function getOneAudit() {
+		$req = $this->model->getOneAudit();
+
+		for ($i=0; $i < count($req); $i++) {
+			$req[$i]['row'] = $i+1;
+			$req[$i]['Resultado'] = 100*$req[$i]['Resultado']."%";
+		}
+
+		echo json_encode($req, JSON_UNESCAPED_UNICODE);
+		die;
+	}
+
 	public function getAuditDetailTemp()
 	{
 		// Here I'm Capsuling the received data

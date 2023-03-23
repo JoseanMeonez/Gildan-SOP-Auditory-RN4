@@ -10,6 +10,15 @@ export function seeAuditModal() {
 
 	$(document).on("click", ".seeAudit", function () {
 		$('#seeAuditBoarding').modal('show');
+		let dataid = this.getAttribute('dataid')
+		$.ajax({
+			type: "post",
+			url: server + "/boarding/get",
+			success: (r) => {
+				let data = JSON.parse(r)
+			}
+		})
+
 		$(document).on("click", "#printChart", function () {
 			printChart()
 		})
