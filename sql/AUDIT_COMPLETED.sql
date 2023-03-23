@@ -7,7 +7,7 @@ DELIMITER $$
 		DECLARE new_audit_id INT;
 
 		-- Counting area's audit points
-		-- SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
+		SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
 
     -- Checking if exists a detail list from the actual user
     SET registers = (SELECT COUNT(*) FROM detalle_auditoria_tmp WHERE User_ID = id_user);

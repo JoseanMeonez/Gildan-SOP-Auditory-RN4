@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-03-2023 a las 04:26:45
+-- Tiempo de generación: 23-03-2023 a las 05:19:09
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.9
 
@@ -162,7 +162,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `AUDIT_COMPLETED` (`area` INT, `id_u
 		DECLARE new_audit_id INT;
 
 		-- Counting area's audit points
-		-- SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
+		SET area_points = (SELECT COUNT(*) FROM puntos WHERE Area_ID = area);
 
     -- Checking if exists a detail list from the actual user
     SET registers = (SELECT COUNT(*) FROM detalle_auditoria_tmp WHERE User_ID = id_user);
@@ -1024,7 +1024,7 @@ ALTER TABLE `auditorias`
 -- AUTO_INCREMENT de la tabla `auditorias_tmp`
 --
 ALTER TABLE `auditorias_tmp`
-  MODIFY `Id_Auditoria` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_Auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_auditoria`
@@ -1036,7 +1036,7 @@ ALTER TABLE `detalle_auditoria`
 -- AUTO_INCREMENT de la tabla `detalle_auditoria_tmp`
 --
 ALTER TABLE `detalle_auditoria_tmp`
-  MODIFY `Detalle_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Detalle_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `images`
