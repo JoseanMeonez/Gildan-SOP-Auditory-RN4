@@ -7,16 +7,82 @@ export const datatableFilter = () => $('#tblBoarding thead tr').clone(true).addC
 export function seeAuditModal() {
 	// Hidding the responsive data modal
 	$(".dtr-bs-modal").modal('hide')
+	// Load the Visualization API and the corechart package.
+	google.charts.load('current', {
+		'packages': ['corechart']
+	});
+
+	// Set a callback to run when the Google Visualization API is loaded.
+	// google.charts.setOnLoadCallback(drawChart);
 
 	$(document).on("click", ".seeAudit", function () {
 		$('#seeAuditBoarding').modal('show');
 		let dataid = this.getAttribute('dataid')
-		$.ajax({
-			type: "post",
-			url: server + "/boarding/get",
-			success: (r) => {
-				let data = JSON.parse(r)
-			}
+
+		google.charts.setOnLoadCallback(() => {
+			$.ajax({
+				type: "post",
+				url: server + "/boarding/getOneAudit",
+				data: { id: dataid },
+				success: (r) => {
+					let res = JSON.parse(r)
+					console.log(res[0]);
+
+					// Creating Date format
+					const date = new Date(2023, res[0].Mes - 1);
+
+					// Obtaining the month name based on the previous format
+					const monthName = date.toLocaleString('es-ES', { month: 'long' });
+					const month = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+					var data = new google.visualization.DataTable();
+					data.addColumn('string', 'Topping');
+					data.addColumn('number', 'Slices');
+					data.addRows([
+						[res[0].Posicion_Desc, parseInt(res[0].conteo_puntos)],
+						["Otros", 2],
+						["uno", 1],
+						["dos", 3]
+					]);
+
+					// Set chart options
+					var options = {
+						title: `Auditoria de ${month} Semana ${res[0].Semana}`,
+						titleTextStyle: { fontSize: 20 },
+						width: 600,
+						height: 400,
+						fontName: "Poppins",
+						fontSize: 12,
+						legend: {
+							textStyle: {
+								fontSize: 14,
+								bold: true,
+							},
+							position: "left"
+						},
+						pieSliceTextStyle: {
+							color: 'black',
+							fontSize: 12,
+							bold:true
+						},
+						slices: {
+							0: { offset: 0.02 },
+							1: { offset: 0.02 },
+							2: { offset: 0.02 },
+							3: { offset: 0.02 },
+							4: { offset: 0.02 },
+							5: { offset: 0.02 },
+						},
+						// colors: ["#6ab04c", "#7fc77e", "#9bd5b2", "#b5e3d5", "#c5ecd9"],
+						// is3D: true,
+						pieStartAngle: 45
+					};
+
+					// Instantiate and draw our chart, passing in some options.
+					var chart = new google.visualization.PieChart(document.getElementById('chart_div'))
+					chart.draw(data, options)
+				}
+			})
 		})
 
 		$(document).on("click", "#printChart", function () {
@@ -27,7 +93,7 @@ export function seeAuditModal() {
 
 function printChart() {
 	let headertag = document.querySelector("head")
-	let container = window.open('', '', 'height=600,width=800').document.write(headertag.innerHTML+document.getElementById("chart_div").innerHTML);
+	let container = window.open('', '', 'height=600,width=800').document.write(headertag.innerHTML + document.getElementById("chart_div").innerHTML);
 	container.print()
 	container.close()
 }
@@ -62,7 +128,7 @@ export const datatable = () => $('#tblBoarding').DataTable({
 		{ data: 'Pasa' },
 		{ data: 'Falla' },
 		{ data: 'Resultado' },
-		{ data: 'editar'}
+		{ data: 'editar' }
 	],
 	buttons: [
 		// Copy Button
@@ -121,7 +187,7 @@ export const datatable = () => $('#tblBoarding').DataTable({
 		{
 			action: function () {
 				// detailTable(1)
-				setComboBox(0,2,false,"#posicion")
+				setComboBox(0, 2, false, "#posicion")
 				getSupervisorOption("#supervisor")
 				$('#addAuditBoarding').modal('show');
 			},
@@ -193,12 +259,12 @@ export const detailTable = (id) => $('#detalleAuditoria').DataTable({
 		dataSrc: ''
 	},
 	columns: [
-		{data: 'posicion_desc'},
-		{data: 'punto'},
-		{data: 'punto_desc'},
-		{data: 'acciones'},
-		{data: 'imagenes'},
-		{data: 'comment'}
+		{ data: 'posicion_desc' },
+		{ data: 'punto' },
+		{ data: 'punto_desc' },
+		{ data: 'acciones' },
+		{ data: 'imagenes' },
+		{ data: 'comment' }
 	],
 	bDestroy: true,
 	iDisplayLength: 10,
@@ -221,7 +287,7 @@ export const detailTable = (id) => $('#detalleAuditoria').DataTable({
 });
 
 // Current Auditory table
-export const current_audit = () => $('#current-audit-tab').click( function () {
+export const current_audit = () => $('#current-audit-tab').click(function () {
 	$.ajax({
 		type: "get",
 		url: server + '/boarding/getAuditTemp',

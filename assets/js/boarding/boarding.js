@@ -21,5 +21,6 @@ window.addEventListener('load', () => {
 	fn.save_audit()
 	fn.clear_audit()
 	fn.save_comment()
+
 })
 
