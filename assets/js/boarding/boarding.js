@@ -12,6 +12,7 @@ window.addEventListener('load', () => {
 	fn.ComboxesManager(config.detailTable)
 	config.current_audit()
 	config.seeAuditModal()
+	config.openImg()
 	
 	// Create modal tables and content:
 	fn.addImageComponent()

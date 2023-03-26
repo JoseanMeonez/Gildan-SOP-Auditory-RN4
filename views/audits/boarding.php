@@ -27,7 +27,7 @@
 			<div class="tile">
 				<div class="tile-body">
 					<table id="tblBoarding" class="table table-bordered table-hover table-striped table-sm display nowrap" cellpadding="0" width="100%">
-						<thead class="bg bg-black text-light text-center align-middle">
+						<thead class="bg-black text-light text-center align-middle">
 							<tr>
 								<th>No.</th>
 								<th>Fecha</th>
