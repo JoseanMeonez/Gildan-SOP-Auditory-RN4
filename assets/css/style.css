@@ -133,6 +133,10 @@
 	background-color: var(--orangered);
 }
 
+.bg-gildan {
+	background-color: var(--gildan);
+}
+
 *,
 *::before,
 *::after {
