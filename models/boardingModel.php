@@ -45,6 +45,7 @@ class boardingModel extends Connection
 	public function getPassedAuditsDetails(int $auditid)
 	{
 		$query = "SELECT
+			YEAR(a.Fecha) AS Año,
 			a.Semana,
 			a.Mes,
 			COUNT(d.Auditoria_ID) AS Puntos_Auditados,

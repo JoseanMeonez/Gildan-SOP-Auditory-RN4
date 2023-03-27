@@ -44,7 +44,7 @@ export function seeAuditModal() {
 
 					// Set chart options
 					let options = {
-						title: `Puntos que Pasan la Auditoria de la Semana ${res[0].Semana} de ${month}`,
+						title: `Puntos que Fallan la Auditoria de la Semana ${res[0].Semana} de ${month} de ${res[0].Año}`,
 						titleTextStyle: { fontSize: 20 },
 						width: 800,
 						height: 400,
@@ -57,6 +57,7 @@ export function seeAuditModal() {
 							},
 							position: "right"
 						},
+						responsive: true,
 						chartArea: { left: 0, top: 50, width: '100%', height: '80%' },
 						pieSliceTextStyle: {
 							color: 'black',
@@ -70,6 +71,21 @@ export function seeAuditModal() {
 							3: { offset: 0.02 },
 							4: { offset: 0.02 },
 							5: { offset: 0.02 },
+							6: { offset: 0.02 },
+							7: { offset: 0.02 },
+							8: { offset: 0.02 },
+							9: { offset: 0.02 },
+							10: { offset: 0.02 },
+							11: { offset: 0.02 },
+							12: { offset: 0.02 },
+							13: { offset: 0.02 },
+							14: { offset: 0.02 },
+							15: { offset: 0.02 },
+							16: { offset: 0.02 },
+							17: { offset: 0.02 },
+							18: { offset: 0.02 },
+							19: { offset: 0.02 },
+							20: { offset: 0.02 },
 						},
 						// colors: ["#6ab04c", "#7fc77e", "#9bd5b2", "#b5e3d5", "#c5ecd9"],
 						// is3D: true,
@@ -187,32 +203,6 @@ const finalDetail = (id) => $('#detalleAuditoria_final').DataTable({
 	],
 	orderCellsTop: true,
 	fixedHeader: true,
-	initComplete: function () {
-		var api = this.api();
-		// For each column
-		api.columns().eq(0).each(function (colIdx) {
-			// Set the header cell to contain the input element
-			var cell = $('.filters th').eq($(api.column(colIdx).header()).index());
-			var title = $(cell).text();
-			$(cell).html('<input class="form form-control text-center frmDT" type="text" placeholder="' + title + '"/>');
-			// On every keypress in this input
-			$('input', $('.filters th').eq($(api.column(colIdx).header()).index()))
-				.off('keyup change')
-				.on('keyup change', function (e) {
-					e.stopPropagation();
-					// Get the search value
-					$(this).attr('title', $(this).val());
-					var regexr = '({search})'; //$(this).parents('th').find('select').val();
-					var cursorPosition = this.selectionStart;
-					// Search the column for that value
-					api
-						.column(colIdx)
-						.search((this.value != "") ? regexr.replace('{search}', '(((' + this.value + ')))') : "", this.value != "", this.value == "")
-						.draw();
-					$(this).focus()[0].setSelectionRange(cursorPosition, cursorPosition);
-				});
-		});
-	},
 	responsive: {
 		details: {
 			display: $.fn.dataTable.Responsive.display.modal({
