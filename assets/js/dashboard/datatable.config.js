@@ -81,9 +81,6 @@ function drawChart(res) {
 	})
 }
 
-
-
-
 // Datatable properties
 export const datatable = (area, year, month, week) => $('#tblDashboard').DataTable({
 	language: { url: server + '/assets/json/spanish.json' },

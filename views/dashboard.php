@@ -26,6 +26,10 @@
 						<div class="col-md form-group form_info mb-3">
 							<select class="form-select form_input" name="area" id="area">
 								<option id="default_areaoption" disabled selected>Seleccione una opción</option>
+								<option id="default_areaoption" value="1">Knitting</option>
+								<option id="default_areaoption" value="2">Boarding</option>
+								<option id="default_areaoption" value="3">Dyeing</option>
+								<option id="default_areaoption" value="4">Fadis</option>
 							</select>
 							<label for="area" class="form_label">Area</label>
 						</div>
