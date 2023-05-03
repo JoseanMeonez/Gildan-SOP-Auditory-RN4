@@ -38,6 +38,7 @@ class dashboardModel extends Connection
 	{
 		$sql = ("SELECT
 			YEAR(a.Fecha) AS Año,
+			pl.plant_acronym AS Planta,
 			a.Semana,
 			a.Mes,
 			ar.Area_Nombre,
@@ -49,10 +50,11 @@ class dashboardModel extends Connection
 			(SUM(CASE WHEN d.Estado = 1 THEN 1 ELSE 0 END) / COUNT(d.Auditoria_ID)) as Resultado
 			FROM detalle_auditoria d
 			INNER JOIN auditorias a ON a.Id_Auditoria = d.Auditoria_ID
+			INNER JOIN plants_manufacturing pl ON a.Plant_ID = pl.plant_id
 			INNER JOIN area ar ON ar.Area_ID = a.Area_ID
 			INNER JOIN puntos p ON p.Punto_ID = d.Punto_ID
 			LEFT JOIN posiciones pos ON p.Posicion_ID = pos.Posicion_ID
-			WHERE a.Area_ID = $area AND YEAR(a.Fecha) = $year AND MONTH(a.Fecha) = $month AND a.Semana = $week AND (d.Estado = 1 OR d.Estado = 3)
+			WHERE a.Area_ID = $area AND YEAR(a.Fecha) = $year AND a.Mes = $month AND a.Semana = $week AND (d.Estado = 1 OR d.Estado = 3)
 			GROUP BY pos.Posicion_Desc, a.Semana
 		");
 
@@ -70,7 +72,7 @@ class dashboardModel extends Connection
 
 	public function getMonthOptions(int $area, int $year)
 	{
-		$sql = ("SELECT MONTH(Fecha) as Mes FROM auditorias WHERE Area_ID = $area AND YEAR(Fecha) = $year GROUP BY MONTH(Fecha)");
+		$sql = ("SELECT Mes FROM auditorias WHERE Area_ID = $area AND YEAR(Fecha) = $year GROUP BY Mes");
 
 		$req = $this->select_all($sql);
 		return $req;
@@ -78,7 +80,7 @@ class dashboardModel extends Connection
 
 	public function getWeekOptions(int $area, int $year, int $month)
 	{
-		$sql = ("SELECT Semana FROM auditorias WHERE Area_ID = $area AND YEAR(Fecha) = $year AND MONTH(Fecha) = $month");
+		$sql = ("SELECT Semana FROM auditorias WHERE Area_ID = $area AND YEAR(Fecha) = $year AND Mes = $month");
 
 		$req = $this->select_all($sql);
 		return $req;
