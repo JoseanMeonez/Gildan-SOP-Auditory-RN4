@@ -78,6 +78,7 @@
 							<table id="tblDashboard" class="table table-hover table-striped table-sm display nowrap" cellpadding="0" width="100%">
 								<thead class="bg-gildan text-light text-center align-middle">
 									<tr>
+										<th>Planta</th>
 										<th>Area</th>
 										<th>Mes</th>
 										<th>Semana</th>

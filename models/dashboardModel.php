@@ -10,6 +10,7 @@ class dashboardModel extends Connection
 		$currentYear = date("Y");
 		$sql = ("SELECT
 			YEAR(a.Fecha) AS Año,
+			pl.plant_acronym AS Planta,
 			a.Semana,
 			a.Mes,
 			ar.Area_Nombre,
@@ -21,6 +22,7 @@ class dashboardModel extends Connection
 			(SUM(CASE WHEN d.Estado = 1 THEN 1 ELSE 0 END) / COUNT(d.Auditoria_ID)) as Resultado
 			FROM detalle_auditoria d
 			INNER JOIN auditorias a ON a.Id_Auditoria = d.Auditoria_ID
+			INNER JOIN plants_manufacturing pl ON a.Plant_ID = pl.plant_id
 			INNER JOIN area ar ON ar.Area_ID = a.Area_ID
 			INNER JOIN puntos p ON p.Punto_ID = d.Punto_ID
 			LEFT JOIN posiciones pos ON p.Posicion_ID = pos.Posicion_ID

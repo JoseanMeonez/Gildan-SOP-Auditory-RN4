@@ -100,6 +100,7 @@ export const datatable = (area, year, month, week) => $('#tblDashboard').DataTab
 		dataSrc: ''
 	},
 	columns: [
+		{ data: 'Planta' },
 		{ data: 'Area_Nombre' },
 		{ data: 'Mes' },
 		{ data: 'Semana' },
