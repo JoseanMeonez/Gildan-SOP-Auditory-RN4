@@ -15,8 +15,8 @@ DELIMITER $$
     -- Inserting audit detail if is there registers in the temp_detail table
     IF registers > 0 THEN
 			-- Inserting the new audit
-			INSERT INTO auditorias(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
-			SELECT t.Supervisor_ID, t.User_ID, t.Fecha, t.Semana, t.Mes, t.Area_ID, t.Pasa, t.Falla, t.Resultado, t.Status
+			INSERT INTO auditorias(Supervisor_ID, User_ID, Plant_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+			SELECT t.Supervisor_ID, t.User_ID, t.Plant_ID, t.Fecha, t.Semana, t.Mes, t.Area_ID, t.Pasa, t.Falla, t.Resultado, t.Status
 			FROM auditorias_tmp t;
 
 			-- Setting last audit id on variable

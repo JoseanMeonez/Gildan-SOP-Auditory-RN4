@@ -9,11 +9,13 @@ DELIMITER $$
 		DECLARE na INT;
 		DECLARE result DOUBLE;
 		DECLARE verification INT;
+		DECLARE plant INT;
 
 		-- Setting variables
 		SET audit_id = (SELECT Id_Auditoria FROM auditorias_tmp WHERE User_ID = user AND Area_ID = area);
 		SET week = (SELECT Semana FROM auditorias WHERE Mes = month ORDER BY Id_Auditoria DESC LIMIT 1) + 1;
 		SET verification = (SELECT Detalle_id FROM detalle_auditoria_tmp d WHERE d.Punto_Auditado = point_id);
+		SET plant = (SELECT plant_id FROM plants_manufacturing p INNER JOIN area a ON a.Area_Plant = p.plant_id  WHERE a.Area_ID = area);
 
 		IF audit_id > 0 THEN
 			-- Inserting details
@@ -35,11 +37,11 @@ DELIMITER $$
 		ELSE
 			-- Creating tmp audit
 			IF week > 0 THEN
-				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
-				VALUES (sup, user, NOW(), week, month, area,0,0,0,1);
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Plant_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, plant, NOW(), week, month, area,0,0,0,1);
 			ELSE
-				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
-				VALUES (sup, user, NOW(), 1, month, area,0,0,0,1);
+				INSERT INTO auditorias_tmp(Supervisor_ID, User_ID, Plant_ID, Fecha, Semana, Mes, Area_ID, Pasa, Falla, Resultado, Status)
+				VALUES (sup, user, plant, NOW(), 1, month, area,0,0,0,1);
 			END IF;
 
 			-- Updating audit id
