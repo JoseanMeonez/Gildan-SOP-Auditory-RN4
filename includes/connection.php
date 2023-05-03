@@ -68,6 +68,14 @@ class Connection
 		return $data;
 	}
 
+	protected function select_all(string $query)
+	{
+		$this->strQuery = $query;
+		$result_select_all = odbc_exec($this->db, $this->strQuery);
+		$data = odbc_fetch_array($result_select_all);
+		return $data;
+	}
+
 	// Function to update a register
 	protected function update(string $query, array $array)
 	{
