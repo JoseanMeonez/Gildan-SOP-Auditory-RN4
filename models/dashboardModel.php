@@ -27,7 +27,7 @@ class dashboardModel extends Connection
 			INNER JOIN puntos p ON p.Punto_ID = d.Punto_ID
 			LEFT JOIN posiciones pos ON p.Posicion_ID = pos.Posicion_ID
 			WHERE YEAR(a.Fecha) = $currentYear AND (d.Estado = 1 OR d.Estado = 3)
-			GROUP BY pos.Posicion_Desc, a.Semana
+			GROUP BY pos.Posicion_Desc, a.Semana, a.Mes
 		");
 
 		$req = $this->select_all($sql);
